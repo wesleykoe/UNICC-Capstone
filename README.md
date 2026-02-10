@@ -35,3 +35,8 @@ source .venv/bin/activate
 
 pip install -r requirements.txt
 uvicorn app.api:app --reload
+
+Once the server is running:
+
+- Health check: http://127.0.0.1:8000/health  
+- API docs: http://127.0.0.1:8000/docs
