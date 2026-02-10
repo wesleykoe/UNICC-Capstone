@@ -19,3 +19,19 @@ The platform runs an open-source language model locally and exposes it via HTTP 
 ---
 
 ## Project Structure
+
+---
+
+## Quick Start
+
+Clone the repository and run the platform locally.
+
+```bash
+git clone https://github.com/wesleykoe/UNICC-Capstone
+cd UNICC-Capstone
+
+python -m venv .venv
+source .venv/bin/activate
+
+pip install -r requirements.txt
+uvicorn app.api:app --reload
