@@ -13,7 +13,7 @@ Local Small Language Model (SLM) platform prototype for the UNICC Capstone proje
 ## Setup
 
 ```bash
-git clone <repo-link>
+git clone https://github.com/wesleykoe/UNICC-Capstone
 cd unicc-slm
 python -m venv .venv
 source .venv/bin/activate
