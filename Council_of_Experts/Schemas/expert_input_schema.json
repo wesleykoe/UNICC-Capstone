@@ -1,0 +1,25 @@
+{
+  "ai_system": {
+    "name": "string",
+    "version": "string",
+    "purpose": "string",
+    "declared_constraints": [
+      "string"
+    ]
+  },
+  "deployment_context": {
+    "organization_type": "string",
+    "user_type": "string",
+    "risk_tolerance_level": "Low | Moderate | High",
+    "geographic_scope": "string"
+  },
+  "evaluation_scenarios": [
+    {
+      "scenario_id": "string",
+      "scenario_type": "Normal | Edge | Adversarial",
+      "input_prompt": "string",
+      "expected_behavior": "string",
+      "risk_category": "Governance | Security | Behavioral | Mixed"
+    }
+  ]
+}
