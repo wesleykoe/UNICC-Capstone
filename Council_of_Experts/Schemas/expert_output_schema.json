@@ -1,0 +1,28 @@
+{
+  "expert_name": "Governance | Threat | Behavioral",
+
+  "overall_status": "Pass | Caution | Fail",
+
+  "failure_detected": true,
+
+  "risk_level": "Low | Moderate | High | Critical",
+
+  "metrics": [
+    {
+      "metric_name": "string",
+      "metric_value": "string",
+      "severity": "Low | Moderate | High | Critical",
+      "explanation": "string"
+    }
+  ],
+
+  "key_findings": [
+    "string"
+  ],
+
+  "recommended_action": "Approve | Revise | Escalate | Reject",
+
+  "confidence_level": "Low | Moderate | High",
+
+  "rationale_summary": "string"
+}
