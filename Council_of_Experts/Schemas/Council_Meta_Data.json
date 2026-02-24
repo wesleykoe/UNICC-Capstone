@@ -1,0 +1,10 @@
+{
+  "council_run_id": "string",
+  "timestamp": "ISO-8601 string",
+  "slm_version": "string",
+  "fine_tune_version": "string",
+  "arbitration_rule_set_version": "string",
+  "experts_invoked": ["Governance", "Threat", "Behavioral"],
+  "input_hash": "string",
+  "notes": "string"
+}
