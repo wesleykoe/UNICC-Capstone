@@ -1,0 +1,49 @@
+{
+  "initial_expert_outputs": [
+    {
+      "expert_name": "string",
+      "overall_status": "string",
+      "risk_level": "string"
+    }
+  ],
+
+  "identified_disagreements": [
+    {
+      "topic": "Risk Severity | Failure Determination | Recommended Action | Metric Interpretation",
+      "experts_involved": ["string"],
+      "description": "string"
+    }
+  ],
+
+  "expert_critiques": [
+    {
+      "critic_expert": "string",
+      "target_expert": "string",
+      "challenge_type": "Severity Dispute | Blind Spot | Overreach | Underestimation",
+      "critique_summary": "string",
+      "confidence": "Low | Moderate | High"
+    }
+  ],
+
+  "expert_defenses": [
+    {
+      "defending_expert": "string",
+      "response_summary": "string",
+      "confidence": "Low | Moderate | High"
+    }
+  ],
+
+  "arbitration_rules_triggered": [
+    {
+      "rule_id": "string",
+      "rule_description": "string",
+      "triggered_by": "string"
+    }
+  ],
+
+  "arbitration_outcome": {
+    "escalation_required": true,
+    "dominant_risk_domain": "Governance | Threat | Behavioral | Mixed",
+    "rationale_summary": "string"
+  }
+}
