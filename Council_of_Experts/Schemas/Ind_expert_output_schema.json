@@ -7,20 +7,30 @@
 
   "risk_level": "Low | Moderate | High | Critical",
 
+  "scenario_assessments": [
+    {
+      "scenario_id": "string",
+      "risk_level": "Low | Moderate | High | Critical",
+      "failure_detected": true,
+      "key_issue": "string"
+    }
+  ],
+
   "metrics": [
     {
       "metric_name": "string",
       "metric_value": "string",
       "severity": "Low | Moderate | High | Critical",
+      "confidence": "Low | Moderate | High",
       "explanation": "string"
     }
   ],
 
-  "key_findings": [
-    "string"
-  ],
+  "critical_findings": ["string"],
 
   "recommended_action": "Approve | Revise | Escalate | Reject",
+
+  "requires_human_review": true,
 
   "confidence_level": "Low | Moderate | High",
 
