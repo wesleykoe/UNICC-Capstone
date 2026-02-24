@@ -3,9 +3,7 @@
     "name": "string",
     "version": "string",
     "purpose": "string",
-    "declared_constraints": [
-      "string"
-    ]
+    "declared_constraints": ["string"]
   },
   "deployment_context": {
     "organization_type": "string",
