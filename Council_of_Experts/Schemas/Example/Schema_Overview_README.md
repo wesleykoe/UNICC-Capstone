@@ -1,165 +1,162 @@
-🏛 Council of Experts Framework
+# Council of Experts Architecture
 
-Project 2 — Fine-Tuned SLM Institutional Deliberation System
-UNICC Spring 2026
+## 1. Purpose
 
-Overview
+The Council of Experts framework evaluates whether an AI system is safe, appropriate, and institutionally deployable within a UN or humanitarian organizational context.
 
-This project implements a structured Council-of-Experts framework for institutional AI system evaluation.
+It structures evaluation across independent expert domains and produces a deterministic final recommendation through formal deliberation and arbitration.
 
-Rather than relying on a single evaluation model or majority voting, this architecture:
+This system does NOT rely on majority voting, score averaging, or opaque model judgment.
 
-Separates safety evaluation into independent expert domains
+---
 
-Structures disagreement explicitly
+## 2. Architectural Structure
 
-Applies deterministic arbitration rules
+The framework consists of five structured stages:
 
-Produces a traceable, institutional-grade final recommendation
+1. Execution Metadata  
+2. Expert Input  
+3. Independent Expert Outputs  
+4. Council Deliberation  
+5. Final Recommendation  
 
-The system is designed for high-stakes governance environments where transparency, reproducibility, and accountability are essential.
+Each stage exists to preserve traceability, separation of concerns, and institutional accountability.
 
-Architectural Philosophy
+---
 
-The Council is built on five core principles:
+## 3. Expert Domains
 
-Separation of Concerns — Each expert evaluates a distinct safety dimension.
+The Council is composed of three independent experts:
 
-Structured Disagreement — Experts may disagree; disagreement is recorded, not suppressed.
+- Governance Expert  
+- Threat Expert  
+- Behavioral Expert  
 
-Deterministic Arbitration — Final decisions follow defined rules, not majority vote.
+Each expert evaluates a different dimension of AI safety and does NOT overlap in responsibility.
 
-Scenario-Level Granularity — Risk is tied to specific test cases.
+---
 
-Auditability — Every council run is reproducible and version-traceable.
+## 4. Evaluation Flow
 
-System Workflow
+### 4.1 Execution Metadata
 
-The evaluation process proceeds through the following stages:
+Captures:
 
-0️⃣ Execution Metadata
+- Council run identifier  
+- Model version  
+- Fine-tuning version  
+- Arbitration rule set version  
+- Timestamp  
 
-Captures reproducibility data:
+This ensures reproducibility and auditability.
 
-Model version
+---
 
-Fine-tune version
+### 4.2 Expert Input
 
-Arbitration rule version
+Defines:
 
-Timestamp
+- AI system metadata  
+- Deployment context  
+- Risk tolerance level  
+- Structured evaluation scenarios  
 
-Experts invoked
+All experts receive identical input to prevent contextual drift.
 
-This ensures traceability and governance defensibility.
+---
 
-1️⃣ Expert Input
+### 4.3 Independent Expert Outputs
 
-Defines what is being evaluated:
+Each expert produces structured outputs containing:
 
-AI system metadata
+- Risk levels  
+- Scenario-specific findings  
+- Recommended action  
+- Confidence level  
+- Summary rationale  
 
-Deployment context
+Experts operate independently and do not see each other’s outputs during this phase.
 
-Risk tolerance level
+---
 
-Structured evaluation scenarios
+### 4.4 Council Deliberation
 
-All experts receive identical structured input.
+This stage:
 
-This prevents contextual drift and ensures fairness in evaluation.
+- Identifies disagreements  
+- Records critiques and defenses  
+- Applies deterministic arbitration rules  
 
-2️⃣ Independent Expert Evaluation
+Disagreement is preserved and analyzed, not averaged.
 
-Three experts evaluate the system separately:
+---
 
-Governance Expert
+### 4.5 Final Recommendation
 
-Focus: Institutional alignment
-Evaluates:
+The Council produces:
 
-Policy compliance
+- Final decision (Approve / Revise / Escalate / Reject)  
+- Final risk level  
+- Human review requirement  
+- Required mitigations  
+- Confidence level  
+- Final rationale  
 
-Mandate alignment
+This output serves as the institutional governance artifact.
 
-Ethical consistency
+---
 
-Reputational risk
+## 5. Arbitration Philosophy
 
-Threat Expert
+The Council does NOT:
 
-Focus: Exploitability and misuse
-Evaluates:
+- Use majority voting  
+- Average risk scores  
+- Collapse disagreement into consensus prematurely  
 
-Prompt injection vulnerability
+Instead, it applies predefined escalation rules.
 
-Guardrail bypass potential
+Examples include:
 
-Misuse plausibility
+- Any Critical risk triggers escalation logic.  
+- Governance failures require human review.  
+- Behavioral instability without exploitability may allow revision rather than rejection.  
 
-Severity of exploitation
+---
 
-Behavioral Expert
+## 6. Separation of Concerns
 
-Focus: Stability and alignment drift
-Evaluates:
+Each expert intentionally ignores domains outside its lens.
 
-Cross-scenario consistency
+This prevents:
 
-Alignment stability under pressure
+- Domain contamination  
+- Overlapping reasoning  
+- Blurred accountability  
 
-Intent fidelity
+The integrity of the Council depends on preserving expert independence.
 
-Predictability confidence
+---
 
-Each expert produces:
+## 7. Failure Definition
 
-Overall status (Pass / Caution / Fail)
+The Council declares system-level failure if:
 
-Risk level (Low → Critical)
+- Arbitration rules trigger escalation conditions, or  
+- Institutional thresholds are exceeded under defined risk tolerance settings.
 
-Scenario-level findings
+Failure is rule-driven, not opinion-driven.
 
-Recommended action
+---
 
-Confidence rating
+## 8. Philosophical Position
 
-3️⃣ Council Deliberation
+Safety is multi-dimensional.
 
-The system then:
+An AI system may be:
 
-Identifies disagreements between experts
+- Technically robust but governance-unsafe.  
+- Policy-compliant but behaviorally unstable.  
+- Stable but exploitable.  
 
-Records critiques and defenses
-
-Applies arbitration rules
-
-This stage does not average scores.
-
-Instead, it determines whether predefined escalation conditions are triggered.
-
-Examples of arbitration logic:
-
-Any Critical risk → Escalation required
-
-Governance failure → Human review mandatory
-
-Behavioral instability alone → May allow revision
-
-4️⃣ Final Recommendation
-
-The Council produces an official institutional decision:
-
-Final decision (Approve / Revise / Escalate / Reject)
-
-Final risk level
-
-Human review requirement
-
-Required mitigations
-
-Confidence level
-
-Summary rationale
-
-This output becomes the authoritative governance artifact.
+The Council exists to reconcile these tensions formally and transparently.
