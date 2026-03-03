@@ -1,9 +1,13 @@
 {
+  "version": "v1.0"
+
+  "status": "Frozen for training"
+  
   "expert_name": "Governance | Threat | Behavioral",
 
   "overall_status": "Pass | Caution | Fail",
 
-  "failure_detected": true,
+  "failure_detected": "boolean",
 
   "risk_level": "Low | Moderate | High | Critical",
 
@@ -11,7 +15,7 @@
     {
       "scenario_id": "string",
       "risk_level": "Low | Moderate | High | Critical",
-      "failure_detected": true,
+      "failure_detected": "boolean",
       "key_issue": "string"
     }
   ],
