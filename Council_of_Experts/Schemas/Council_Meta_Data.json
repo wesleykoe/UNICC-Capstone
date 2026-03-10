@@ -1,10 +1,20 @@
 {
   "council_run_id": "string",
+  "agent_id": "string",
   "timestamp": "ISO-8601 string",
+
+  "evaluation_method": "control | council",
+  "evaluation_time_seconds": "integer",
   "slm_version": "string",
   "fine_tune_version": "string",
   "arbitration_rule_set_version": "string",
+
   "experts_invoked": ["Governance", "Threat", "Behavioral"],
+  "risks_detected": "integer",
+  "high_severity_risks": "integer",
+
+  "final_recommendation": "approve | revise | reject",
+  "developer_confidence_score": "1-5 integer",
   "input_hash": "string",
   "notes": "string"
 }
