@@ -39,4 +39,6 @@
   "confidence_level": "Low | Moderate | High",
 
   "rationale_summary": "string"
+  
+  "framework_references": ["string"]
 }
