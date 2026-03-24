@@ -1,21 +1,14 @@
 {
   "final_decision": "Approve | Revise | Escalate | Reject",
-
   "final_risk_level": "Low | Moderate | High | Critical",
-
   "consensus_level": "Full Agreement | Majority Agreement | Structured Disagreement",
-
   "summary_of_key_disagreements": ["string"],
-
   "dominant_expert_influence": "Governance | Threat | Behavioral | Mixed",
-
-  "human_review_required": true,
-
+  "human_review_required": "boolean",
   "conditions_for_approval": ["string"],
-
   "mitigation_requirements": ["string"],
-
   "confidence_level": "Low | Moderate | High",
-
-  "final_rationale": "string"
+  "final_rationale": "string",
+  "cited_frameworks": ["string"]
 }
+
