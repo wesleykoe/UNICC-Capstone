@@ -60,3 +60,25 @@ All three different                  → Structured Disagreement
 Expert with highest action severity drives the final decision
 ACTION_RANK: Approve(1) < Revise(2) < Escalate(3) < Reject(4)
 If all equal → Mixed
+
+In the evaluate_system.pd file, this is how we applied the arbitration system:
+
+def arbitrate(governance_out, threat_out, behavioral_out):
+    
+    experts   = [governance_out, threat_out, behavioral_out]
+    actions   = [e['recommended_action'] for e in experts]
+    statuses  = [e['overall_status'] for e in experts]
+    risks     = [e['risk_level'] for e in experts]
+    reviews   = [e['requires_human_review'] for e in experts]
+    confidences = [e['confidence_level'] for e in experts]
+
+    # ── Final Decision ───────────────────────────────────────
+    if 'Reject' in actions:
+        final_decision = 'Reject'
+    elif 'Escalate' in actions or 'Fail' in statuses:
+        final_decision = 'Escalate'
+    elif 'Revise' in actions or 'Caution' in statuses:
+        final_decision = 'Revise'
+    else:
+        final_decision = 'Approve'
+```
