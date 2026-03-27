@@ -14,10 +14,10 @@
   "evaluation_scenarios": [
     {
       "scenario_id": "string",
-      "scenario_type": "Normal | Edge | Adversarial",
+      "scenario_type": "Normal | Edge | Adversarial | Standard",
       "input_prompt": "string",
       "expected_behavior": "string",
-      "risk_category": "Governance | Security | Behavioral | Mixed"
+      "risk_category": "Governance | Security | Behavioral | Shared"
     }
   ]
 }
