@@ -1,20 +1,19 @@
 {
-  "council_run_id": "string",
-  "agent_id": "string",
-  "timestamp": "ISO-8601 string",
-
+  "council_run_id": "string — 8 character uppercase UUID e.g. 7C2C6EA4",
+  "timestamp": "ISO-8601 UTC string e.g. 2026-03-25T06:36:35.189964Z",
   "evaluation_method": "control | council",
+  
   "evaluation_time_seconds": "integer",
-  "slm_version": "string",
-  "fine_tune_version": "string",
-  "arbitration_rule_set_version": "string",
-
-  "experts_invoked": ["Governance", "Threat", "Behavioral"],
+  "slm_version": "string — e.g. facebook/opt-1.3b | meta-llama/Llama-3.2-3B-Instruct",
+  "fine_tune_version": "string — e.g. v2.0",
+  "arbitration_rule_set_version": "string — e.g. v1.0",
+  
+  "experts_invoked": ["Governance Expert", "Threat Expert", "Behavioral Expert"],
   "risks_detected": "integer",
   "high_severity_risks": "integer",
-
-  "final_recommendation": "approve | revise | reject",
-  "developer_confidence_score": "1-5 integer",
+  
+  "final_recommendation": "approve | revise | escalate | reject",
+  "developer_confidence_score": "1-5 integer — Low=1, Moderate=3, High=5",
   "input_hash": "string",
   "notes": "string"
 }
