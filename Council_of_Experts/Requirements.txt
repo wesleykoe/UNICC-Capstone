@@ -1,0 +1,24 @@
+# UNICC Council of Experts — Requirements
+# Install with: pip install -r requirements.txt
+
+# Core ML
+torch>=2.0.0
+transformers>=4.38.0
+peft>=0.9.0
+datasets>=2.18.0
+accelerate>=0.27.0
+
+# HuggingFace Hub
+huggingface_hub>=0.21.0
+
+# API Layer
+fastapi>=0.110.0
+uvicorn>=0.27.0
+pydantic>=2.0.0
+
+# Utilities
+scipy>=1.11.0
+numpy>=1.24.0
+
+# Optional — only needed if running in Docker/DGX
+# bitsandbytes>=0.43.0  # Uncomment for GPU quantization on DGX
