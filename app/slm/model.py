@@ -1,38 +1,36 @@
+import os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, set_seed
 
-def load_pipe(model_id: str = "meta-llama/Llama-3.2-3B-Instruct"):
+BASE_MODEL_ID = os.getenv("BASE_MODEL_ID", "meta-llama/Llama-3.2-3B-Instruct")
+DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
+
+def load_pipe(model_id: str = BASE_MODEL_ID):
+    print(f"Loading {model_id} on {DEVICE}...")
     tokenizer = AutoTokenizer.from_pretrained(model_id)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         dtype=torch.float16,
-        device_map={"": "mps"},
+        device_map="auto",
     )
+    model.eval()
+    print("✅ Model loaded.")
     return tokenizer, model
 
-def generate_text(
-    pipe,
-    prompt: str,
-    system_prompt: str = "You are a strict JSON API. Output ONLY a valid JSON object. No explanation. No markdown.",
-    max_new_tokens: int = 300,
-    seed: int = 42,
-) -> str:
+def generate_text(pipe, prompt, expert_id="governance", system_prompt="You are a strict JSON API. Output ONLY valid JSON.", max_new_tokens=256, seed=42):
     tokenizer, model = pipe
     set_seed(seed)
-
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user",   "content": prompt},
-    ]
-
-    text = tokenizer.apply_chat_template(
-        messages,
-        tokenize=False,
-        add_generation_prompt=True,
-    )
-
-    inputs = tokenizer(text, return_tensors="pt").to("mps")
-
+    try:
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt},
+        ]
+        text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    except Exception:
+        text = f"{system_prompt}\n\n{prompt}\n\nOutput:"
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=1024).to(model.device)
     with torch.no_grad():
         outputs = model.generate(
             **inputs,
@@ -40,9 +38,5 @@ def generate_text(
             do_sample=False,
             pad_token_id=tokenizer.eos_token_id,
         )
-
-    decoded = tokenizer.decode(
-        outputs[0][inputs["input_ids"].shape[1]:],
-        skip_special_tokens=True,
-    )
+    decoded = tokenizer.decode(outputs[0][inputs["input_ids"].shape[1]:], skip_special_tokens=True)
     return decoded.strip()
