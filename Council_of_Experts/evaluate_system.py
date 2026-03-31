@@ -30,8 +30,8 @@ from peft import PeftModel
 # CONFIGURATION
 # ================================================================
 
-# Base model — swap to "mistralai/Mistral-7B-v0.1" on DGX
-MODEL_NAME = "facebook/opt-1.3b"
+# Base model — swap to "facebook/opt-1.3b" on DGX
+MODEL_NAME = "meta-llama/Meta-Llama-3-8B-Instruct"
 
 # Adapter paths — update to match your Drive structure
 ADAPTER_PATHS = {
@@ -483,7 +483,7 @@ def evaluate(scenario_input):
             "Low": 1, "Moderate": 3, "High": 5
         }.get(final_recommendation['confidence_level'], 3),
         "input_hash":                   str(hash(json.dumps(scenario_input, sort_keys=True)))[:12],
-        "notes":                        "Trained on opt-1.3b. Upgrade to Mistral-7B on DGX for production quality."
+        "notes":                        "Initially Trained on opt-1.3b. Upgrade to LLAMA 3.8B on DGX for production quality."
     }
 
     result = {
