@@ -101,9 +101,9 @@ from peft import (
 )
 
 # ── Model ────────────────────────────────────────────────────
-# Mistral-7B is our production base model.
+# LLAMA-3.8B is our production base model.
 # On DGX: remove quantization config and set dtype=torch.bfloat16
-MODEL_NAME = "facebook/opt-1.3b"
+MODEL_NAME = "meta-llama/Meta-Llama-3-8B-Instruct"
 MAX_LENGTH  = 1024
 
 # ── LoRA Hyperparameters ─────────────────────────────────────
@@ -135,8 +135,6 @@ print(f"   Epochs:          {NUM_EPOCHS}")
 # CELL 5: Model Loader (float16, No Quantization)
 # ============================================================
 # Instead of 4-bit QLoRA, we load in float16 directly.
-# T4 has 16GB VRAM — Mistral-7B in float16 uses ~14GB.
-# This is tight but workable, and avoids bitsandbytes entirely.
 
 from google.colab import userdata
 import huggingface_hub
@@ -154,14 +152,23 @@ def load_base_model():
     tokenizer.pad_token    = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
+    # Use 4-bit quantization on DGX — bitsandbytes works here
+    bnb_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16,  # bfloat16 — native on A100
+        bnb_4bit_use_double_quant=True
+    )
+
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_NAME,
-        torch_dtype=torch.float32,
-        device_map={"": 0},        # Force everything onto GPU 0, no offloading
+        quantization_config=bnb_config,
+        device_map="auto",           # Let accelerate handle DGX GPU placement
         trust_remote_code=True,
         token=hf_token
     )
 
+    model = prepare_model_for_kbit_training(model)
     model.gradient_checkpointing_enable()
     model.enable_input_require_grads()
 
@@ -273,44 +280,12 @@ def build_dataset(jsonl_path, tokenizer, expert_role):
 print("✅ Dataset formatter defined (v2.0 schema — corrected prompt)")
 
 # ============================================================
-# CELL 6B: Aggressively patch PEFT to disable bitsandbytes
-# ============================================================
-
-import unittest.mock as mock
-import sys
-
-# Create a fake bitsandbytes module that satisfies all PEFT checks
-fake_bnb = mock.MagicMock()
-fake_bnb.nn = mock.MagicMock()
-fake_bnb.nn.Linear4bit = mock.MagicMock()
-fake_bnb.nn.Linear8bitLt = mock.MagicMock()
-
-# Inject fake module into sys.modules so any import of bitsandbytes
-# returns our mock instead of the broken real one
-sys.modules['bitsandbytes'] = fake_bnb
-sys.modules['bitsandbytes.nn'] = fake_bnb.nn
-sys.modules['bitsandbytes.optim'] = mock.MagicMock()
-
-# Now patch PEFT's import checks to return False
-import peft.import_utils as peft_utils
-peft_utils.is_bnb_available = lambda: False
-peft_utils.is_bnb_4bit_available = lambda: False
-
-# Patch directly in peft.tuners.lora as well
-import peft.tuners.lora.model as lora_model
-lora_model.is_bnb_available = lambda: False
-lora_model.is_bnb_4bit_available = lambda: False
-
-print("✅ bitsandbytes fully mocked")
-print(f"   is_bnb_available:      {peft_utils.is_bnb_available()}")
-print(f"   is_bnb_4bit_available: {peft_utils.is_bnb_4bit_available()}")
-
-# ============================================================
 # CELL 7: LoRA Configuration & Training Function
 # ============================================================
 # Reusable training function for all 3 experts.
 # Each call: attaches fresh LoRA adapters, trains, saves,
 # then frees GPU memory for the next expert.
+# Updated for DGX A100 — bf16, paged_adamw_8bit, 4 workers
 
 def train_expert(expert_role, jsonl_path, output_dir):
     """
@@ -355,18 +330,18 @@ def train_expert(expert_role, jsonl_path, output_dir):
         gradient_accumulation_steps=GRAD_ACCUM_STEPS,
         num_train_epochs=NUM_EPOCHS,
         warmup_steps=WARMUP_STEPS,
-        optim="adamw_torch",    # Memory-efficient optimizer for QLoRA
+        optim="paged_adamw_8bit",    # ← DGX: memory-efficient optimizer for QLoRA
         learning_rate=LEARNING_RATE,
         lr_scheduler_type="cosine",
-        fp16=False,                   # Native fp16 on T4 = ~2x speedup
-        bf16=False,
+        fp16=False,
+        bf16=True,                   # ← DGX: A100 supports bf16 natively, faster and more stable
         save_strategy="steps",
         save_steps=25,
         save_total_limit=2,
         logging_steps=10,
         report_to="none",
         dataloader_pin_memory=True,
-        dataloader_num_workers=2,
+        dataloader_num_workers=4,    # ← DGX: more CPU workers available than Colab
     )
 
     # Step 5: Initialize Trainer
@@ -384,7 +359,7 @@ def train_expert(expert_role, jsonl_path, output_dir):
     print("Starting training...")
     trainer.train()
 
-    # Step 7: Save adapter to Drive
+    # Step 7: Save adapter
     # Saves only LoRA weights (~50-100MB), not the full model
     print(f"Saving adapter to {output_dir}...")
     model.save_pretrained(output_dir)
@@ -1127,7 +1102,7 @@ print("\nNext step: Run evaluate_system.py to apply arbitration")
 
 # Copy the evaluate_system.py functions into Colab
 # by running the file directly:
-exec(open('/content/drive/MyDrive/Class/Capstone/evaluate_system.py').read())
+exec(open('/content/drive/MyDrive/Class/Capstone/evaluate_system.py').read()) # Needs to be updated after porting into DGX
 
 # Run evaluation
 result = evaluate(SHARED_SH1)
