@@ -1,0 +1,11 @@
+{
+  "version": "v1.0",
+  "status": "Active — post DGX implementation",
+
+  "defending_expert": "Governance Expert | Threat Expert | Behavioral Expert",
+  "response_summary": "string — one sentence defense",
+  "position_changed": "boolean",
+  "updated_recommended_action": "Approve | Revise | Escalate | Reject",
+  "updated_overall_status": "Pass | Caution | Fail",
+  "confidence": "Low | Moderate | High"
+}
