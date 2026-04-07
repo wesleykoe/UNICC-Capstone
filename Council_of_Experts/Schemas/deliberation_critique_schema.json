@@ -1,0 +1,11 @@
+{
+  "version": "v1.0",
+  "status": "Active — post DGX implementation",
+
+  "critic_expert": "Governance Expert | Threat Expert | Behavioral Expert",
+  "target_expert": "Governance Expert | Threat Expert | Behavioral Expert",
+  "agree": "boolean",
+  "challenge_type": "Severity Dispute | Blind Spot | Overreach | Underestimation | No Challenge",
+  "challenge_summary": "string — one sentence critique",
+  "confidence": "Low | Moderate | High"
+}
