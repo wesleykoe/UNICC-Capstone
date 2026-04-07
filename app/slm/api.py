@@ -20,7 +20,17 @@ SCHEMA_VERSION = "v2.0"
 FINE_TUNE_VER  = "v2.0"
 ARB_RULE_VER   = "v1.1"
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(title="UNICC AI Safety Council SLM Platform", version="0.7.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 pipe = load_pipe(MODEL_ID)
 
 # ─────────────────────────────────────────
@@ -89,6 +99,22 @@ class ExecutionMetadata(BaseModel):
 # Final Council Recommendation (Final_Council_Rec.json v1.1)
 # ─────────────────────────────────────────
 
+class DeliberationCritique(BaseModel):
+    critic_expert: str
+    target_expert: str
+    agree: bool
+    challenge_type: Literal["Severity Dispute", "Blind Spot", "Overreach", "Underestimation", "No Challenge"]
+    challenge_summary: str
+    confidence: Literal["Low", "Moderate", "High"]
+
+class DeliberationDefense(BaseModel):
+    defending_expert: str
+    response_summary: str
+    position_changed: bool
+    updated_recommended_action: Literal["Approve", "Revise", "Escalate", "Reject"]
+    updated_overall_status: Literal["Pass", "Caution", "Fail"]
+    confidence: Literal["Low", "Moderate", "High"]
+
 class CouncilDecision(BaseModel):
     final_decision: Literal["Approve", "Revise", "Escalate", "Reject"]
     final_risk_level: Literal["Low", "Moderate", "High", "Critical"]
@@ -112,6 +138,9 @@ class RunResponse(BaseModel):
     execution_metadata: ExecutionMetadata
     input: RunRequest
     expert_outputs: dict  # keyed by expert name
+    deliberation_critiques: list[DeliberationCritique]
+    deliberation_defenses: list[DeliberationDefense]
+    deliberation_status: str
     final_council_recommendation: CouncilDecision
     latency_ms: int
 
@@ -461,6 +490,9 @@ def run_evaluation(req: RunRequest):
             "Threat Expert":     threat,
             "Behavioral Expert": beh,
         },
+        deliberation_critiques=[],
+        deliberation_defenses=[],
+        deliberation_status="pending_dgx — deliberation layer activates on Llama-3-8B",
         final_council_recommendation=council,
         latency_ms=latency_ms,
     )
