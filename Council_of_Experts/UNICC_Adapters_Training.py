@@ -1097,6 +1097,100 @@ print("\nNext step: Run evaluate_system.py to apply arbitration")
 """# **Evaluation System**"""
 
 # ============================================================
+# CELL 18: Test Deliberation Layer
+# ============================================================
+# Runs the deliberation phase independently to verify
+# that experts can critique and defend against each other
+# before running the full evaluate_system.py pipeline.
+#
+# Prerequisites:
+#   - Cell 14, 15, 16 must have run (expert outputs in memory)
+#   - deliberate() function must be loaded from evaluate_system.py
+#
+# What this tests:
+#   - Each expert critiques the other two outputs
+#   - Each expert defends against critiques directed at them
+#   - Position changes (if any) are captured
+#
+# Expected behavior on LLaMA-3-8B:
+#   - Governance critiques Threat/Behavioral on neutrality grounds
+#   - Threat critiques others on security vulnerability grounds
+#   - Behavioral critiques others on language safety grounds
+
+print("╔══════════════════════════════════════════════════════════╗")
+print("║           DELIBERATION LAYER TEST                       ║")
+print("╚══════════════════════════════════════════════════════════╝")
+
+# ── Step 1: Load deliberate() from evaluate_system.py ────────
+exec(open('./evaluate_system.py').read())
+
+# ── Step 2: Package expert outputs from Cells 14-16 ─────────
+import json
+import re
+
+def safe_parse(raw):
+    """Parse raw expert output into dict for deliberation."""
+    try:
+        start = raw.find('{')
+        if start == -1:
+            return None
+        cleaned = raw[start:]
+        return json.loads(cleaned)
+    except:
+        return None
+
+expert_outputs = {
+    "Governance Expert": safe_parse(gov_shared_output),
+    "Threat Expert":     safe_parse(threat_shared_output),
+    "Behavioral Expert": safe_parse(beh_shared_output),
+}
+
+# Check all outputs are available
+print("\n📋 Expert outputs loaded:")
+for name, output in expert_outputs.items():
+    status = "✅" if output else "⚠️  Using fallback"
+    print(f"   {status} {name}")
+
+# ── Step 3: Run deliberation ─────────────────────────────────
+print("\n🔄 Running deliberation phase...")
+print("   Round 1: Critique phase")
+print("   Round 2: Defense phase")
+
+deliberation_result = deliberate(
+    expert_outputs  = expert_outputs,
+    scenario_input  = SHARED_SH1,
+    adapter_paths   = ADAPTER_PATHS
+)
+
+# ── Step 4: Display results ──────────────────────────────────
+print("\n=== DELIBERATION RESULTS ===\n")
+
+print("--- CRITIQUES ---")
+for critic, critiques in deliberation_result['critiques'].items():
+    print(f"\n{critic}:")
+    for target, critique in critiques.items():
+        print(f"   → To {target}: {critique.get('challenge_summary', 'N/A')}")
+        print(f"     Confidence: {critique.get('confidence', 'N/A')}")
+
+print("\n--- DEFENSES ---")
+for defender, defense in deliberation_result['defenses'].items():
+    print(f"\n{defender}:")
+    print(f"   Response: {defense.get('response_summary', 'N/A')}")
+    print(f"   Position changed: {defense.get('position_changed', False)}")
+    if defense.get('position_changed'):
+        print(f"   New action: {defense.get('updated_recommended_action', 'N/A')}")
+
+print("\n--- POSITION CHANGES ---")
+changes = deliberation_result.get('position_changes', {})
+if changes:
+    for expert, change in changes.items():
+        print(f"   {expert}: {change['original']} → {change['updated']}")
+else:
+    print("   No position changes after deliberation")
+
+print("\n✅ Deliberation complete — ready for Cell 19")
+
+# ============================================================
 # CELL 19: Run evaluate_system on SH1
 # ============================================================
 
