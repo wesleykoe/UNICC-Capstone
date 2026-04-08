@@ -13,7 +13,7 @@ def load_pipe(model_id: str = BASE_MODEL_ID):
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         dtype=torch.float16,
-        device_map={"": "mps"},
+        device_map={"": DEVICE},
     )
     model.eval()
     print("✅ Model loaded.")
