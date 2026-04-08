@@ -156,6 +156,9 @@ def extract_json(raw_output):
 
         return json.loads(json_str)
 
+    except json.JSONDecodeError:
+    return None
+    
     except Exception:
         return None
 
