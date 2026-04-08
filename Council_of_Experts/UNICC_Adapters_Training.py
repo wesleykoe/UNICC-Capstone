@@ -100,9 +100,9 @@ from peft import (
     TaskType
 )
 
-# ── Model ────────────────────────────────────────────────────
-# LLAMA-3.8B is our production base model.
-# On DGX: remove quantization config and set dtype=torch.bfloat16
+# ── Base Model ────────────────────────────────────────────────────
+# Development (Colab): "facebook/opt-1.3b"
+# Production (DGX):    "meta-llama/Meta-Llama-3-8B-Instruct"
 MODEL_NAME = "meta-llama/Meta-Llama-3-8B-Instruct"
 MAX_LENGTH  = 1024
 
