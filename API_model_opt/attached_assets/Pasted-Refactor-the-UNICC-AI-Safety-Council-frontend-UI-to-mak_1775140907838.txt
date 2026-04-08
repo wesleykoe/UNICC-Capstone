@@ -1,0 +1,63 @@
+Refactor the UNICC AI Safety Council frontend UI to make it look more professional, credible, and presentation-ready for a UN-style AI governance demo.
+
+Goals:
+1. Remove any global result badge from the top-right header. Do NOT show evaluation outcomes like Escalate / Reject / Approve in the header.
+2. Replace the top-right area with either:
+   - a simple user identity block, e.g. “Dennis Ye” with subtitle “Council Reviewer”
+   - or a neutral system status badge like “System Active”
+   Prefer the user identity block.
+
+3. Improve the Expert Panel cards:
+   - Remove wording like “Structured response unavailable”, “fallback mode applied”, “could not be parsed”, or anything that looks like a system bug.
+   - Present each expert as a structured reviewer with:
+     - expert name
+     - overall status badge
+     - risk level
+     - action
+     - confidence
+     - key finding
+     - framework references
+     - human review flag
+   - Keep the style clean, high-trust, and concise.
+
+4. Improve the Council Decision page:
+   - Keep the final decision hero card.
+   - Rewrite rationale text so it sounds intentional and policy-driven, not like a parsing failure.
+   - Replace bug-like language with formal governance language, such as:
+     “Decision driven by consistent high-risk signals across expert domains.”
+   - Add a short structured summary of expert signals.
+
+5. Improve the Dashboard:
+   - Add a “System Health Summary” card or strip showing:
+     - System Risk Level
+     - Primary Driver
+     - Human Review Status
+   - Keep layout clean and spacious.
+
+6. Improve the Reports page:
+   - For each evaluation row, show:
+     - final decision
+     - risk level
+     - consensus
+     - dominant expert
+     - PDF action
+   - Make it feel like a governance review archive rather than a generic admin table.
+
+7. Visual rules:
+   - Keep the overall layout minimal and professional.
+   - Use soft borders, rounded corners, muted background, clear hierarchy.
+   - Status colors should be subtle, not flashy.
+   - Emphasize trust, policy review, and institutional clarity.
+
+8. Use these UI text replacements:
+   - Replace “Structured response unavailable” with “Structured expert review completed.”
+   - Replace “fallback mode applied” with “Conservative safety review applied.”
+   - Replace “could not be parsed” with “Review completed under conservative safety rules.”
+   - Replace generic technical error phrasing with professional governance phrasing.
+
+9. Keep all existing navigation tabs:
+   Dashboard, Run Evaluation, Expert Panel, Council Decision, Reports
+
+10. Do not break current page routing or evaluation flow. Only improve presentation and text.
+
+Please update the relevant header, dashboard, expert card, council decision, and reports components.

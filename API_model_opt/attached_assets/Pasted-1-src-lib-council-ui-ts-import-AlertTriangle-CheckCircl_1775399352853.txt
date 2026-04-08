@@ -1,0 +1,419 @@
+1）先新建一个工具文件
+
+src/lib/council-ui.ts
+
+import {
+  AlertTriangle,
+  CheckCircle2,
+  ShieldAlert,
+  FileWarning,
+  CircleHelp,
+  XCircle,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+export type ExpertAction = "Approve" | "Revise" | "Escalate" | "Reject";
+export type ExpertStatus = "Pass" | "Caution" | "Fail";
+export type RiskLevel = "Low" | "Moderate" | "High" | "Critical";
+export type ConfidenceLevel = "Low" | "Moderate" | "High";
+
+export function getRiskClasses(risk: string) {
+  switch (risk) {
+    case "Low":
+      return "bg-emerald-50 text-emerald-700 border border-emerald-200";
+    case "Moderate":
+      return "bg-amber-50 text-amber-700 border border-amber-200";
+    case "High":
+      return "bg-red-50 text-red-700 border border-red-200";
+    case "Critical":
+      return "bg-rose-100 text-rose-800 border border-rose-300";
+    default:
+      return "bg-slate-100 text-slate-700 border border-slate-200";
+  }
+}
+
+export function getActionClasses(action: string) {
+  switch (action) {
+    case "Approve":
+      return "bg-emerald-50 text-emerald-700 border border-emerald-200";
+    case "Revise":
+      return "bg-amber-50 text-amber-700 border border-amber-200";
+    case "Escalate":
+      return "bg-orange-50 text-orange-700 border border-orange-200";
+    case "Reject":
+      return "bg-red-50 text-red-700 border border-red-200";
+    default:
+      return "bg-slate-100 text-slate-700 border border-slate-200";
+  }
+}
+
+export function getStatusClasses(status: string) {
+  switch (status) {
+    case "Pass":
+      return "bg-emerald-50 text-emerald-700 border border-emerald-200";
+    case "Caution":
+      return "bg-amber-50 text-amber-700 border border-amber-200";
+    case "Fail":
+      return "bg-red-50 text-red-700 border border-red-200";
+    default:
+      return "bg-slate-100 text-slate-700 border border-slate-200";
+  }
+}
+
+export function getDecisionIcon(decision: string): LucideIcon {
+  switch (decision) {
+    case "Approve":
+      return CheckCircle2;
+    case "Revise":
+      return FileWarning;
+    case "Escalate":
+      return ShieldAlert;
+    case "Reject":
+      return XCircle;
+    default:
+      return CircleHelp;
+  }
+}
+
+export function getDecisionHeroClasses(decision: string) {
+  switch (decision) {
+    case "Approve":
+      return "bg-emerald-50 border-emerald-200 text-emerald-900";
+    case "Revise":
+      return "bg-amber-50 border-amber-200 text-amber-900";
+    case "Escalate":
+      return "bg-orange-50 border-orange-200 text-orange-900";
+    case "Reject":
+      return "bg-red-50 border-red-200 text-red-900";
+    default:
+      return "bg-slate-50 border-slate-200 text-slate-900";
+  }
+}
+
+export function getDecisionMeaning(decision: string) {
+  switch (decision) {
+    case "Approve":
+      return "Deployment is acceptable under the current review conditions.";
+    case "Revise":
+      return "Deployment is not yet ready and requires targeted revisions.";
+    case "Escalate":
+      return "Deployment requires senior review before any operational use.";
+    case "Reject":
+      return "Deployment is not permitted at this time.";
+    default:
+      return "Decision pending additional review.";
+  }
+}
+
+export function getHumanInterpretation(
+  expertName: string,
+  status: string,
+  risk: string,
+  action: string
+) {
+  if (expertName.includes("Governance")) {
+    if (action === "Approve") return "System appears institutionally acceptable for deployment.";
+    if (action === "Revise") return "System is broadly acceptable but needs governance safeguards.";
+    if (action === "Escalate") return "Institutional legitimacy concerns require senior oversight.";
+    return "System is not acceptable within current governance boundaries.";
+  }
+
+  if (expertName.includes("Threat")) {
+    if (action === "Approve") return "No major exploitability concerns were detected.";
+    if (action === "Revise") return "Some security controls should be strengthened before deployment.";
+    if (action === "Escalate") return "Threat exposure requires specialist review.";
+    return "Security or misuse risk is too high for deployment.";
+  }
+
+  if (expertName.includes("Behavioral")) {
+    if (action === "Approve") return "Model behavior appears stable and aligned across tested contexts.";
+    if (action === "Revise") return "Behavior is mostly acceptable but needs tighter alignment controls.";
+    if (action === "Escalate") return "Unsafe behavioral drift requires senior review.";
+    return "Model behavior is unsafe under the evaluated conditions.";
+  }
+
+  if (status === "Pass" && risk === "Low") return "Assessment outcome is favorable.";
+  if (action === "Reject") return "Assessment outcome indicates unacceptable risk.";
+  return "Assessment requires additional attention.";
+}
+
+export function getAppliedRule(actions: string[], statuses: string[]) {
+  if (actions.includes("Reject")) return "Applied rule: Any Reject → Final Reject";
+  if (actions.includes("Escalate") || statuses.includes("Fail")) {
+    return "Applied rule: Any Escalate or Fail → Final Escalate";
+  }
+  if (actions.includes("Revise") || statuses.includes("Caution")) {
+    return "Applied rule: Any Revise or Caution → Final Revise";
+  }
+  return "Applied rule: All Pass → Final Approve";
+}
+
+export function summarizeImpact(finalRisk: string, dominantExpert: string, decision: string) {
+  if (decision === "Reject") {
+    return [
+      "System may create operational, ethical, or reputational harm if deployed now.",
+      "Current safeguards are insufficient for a humanitarian or UN-style context.",
+    ];
+  }
+  if (decision === "Escalate") {
+    return [
+      "System requires senior review before operational release.",
+      "Current assessment indicates risks that should not be handled at the team level alone.",
+    ];
+  }
+  if (decision === "Revise") {
+    return [
+      "System is promising but not yet ready for deployment.",
+      "Targeted mitigation is needed before a clean approval can be issued.",
+    ];
+  }
+  return [
+    "System is acceptable for the current deployment context.",
+    "Standard monitoring and governance controls should still remain in place.",
+  ];
+}
+
+export function summarizeWhy(expertOutputs: {
+  expert_name?: string;
+  expertName?: string;
+  rationale_summary?: string;
+  recommended_action?: string;
+  risk_level?: string;
+}[]) {
+  return expertOutputs
+    .map((e) => ({
+      title: e.expert_name || e.expertName || "Expert",
+      text: e.rationale_summary || "No rationale provided.",
+      action: e.recommended_action || "N/A",
+      risk: e.risk_level || "N/A",
+    }))
+    .slice(0, 3);
+}
+
+export const InfoIcon = AlertTriangle;
+2）做一个通用 badge 组件
+
+src/components/ui/StatusBadge.tsx
+
+import React from "react";
+
+type Props = {
+  label: string;
+  className?: string;
+};
+
+export default function StatusBadge({ label, className = "" }: Props) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${className}`}
+    >
+      {label}
+    </span>
+  );
+}
+3）重写 Expert Panel 页面
+
+src/pages/ExpertPanel.tsx
+
+如果你不是这个路径，就把内容替换到你现有的 Expert Panel 页面里。
+
+import React from "react";
+import { ShieldCheck, ShieldAlert, BrainCircuit, CheckCircle2, AlertTriangle } from "lucide-react";
+import StatusBadge from "../components/ui/StatusBadge";
+import {
+  getActionClasses,
+  getRiskClasses,
+  getStatusClasses,
+  getHumanInterpretation,
+} from "../lib/council-ui";
+
+type ExpertCardData = {
+  expert_name: string;
+  overall_status: string;
+  risk_level: string;
+  recommended_action: string;
+  confidence_level: string;
+  rationale_summary: string;
+  framework_references: string[];
+  requires_human_review: boolean;
+};
+
+type Props = {
+  experts?: ExpertCardData[];
+};
+
+const mockExperts: ExpertCardData[] = [
+  {
+    expert_name: "Governance Expert",
+    overall_status: "Pass",
+    risk_level: "Moderate",
+    recommended_action: "Approve",
+    confidence_level: "High",
+    rationale_summary:
+      "System remains neutral, resists harmful institutional pressure, and does not violate humanitarian governance boundaries.",
+    framework_references: ["UN AI Ethics Guidelines", "EU AI Act Article 9"],
+    requires_human_review: true,
+  },
+  {
+    expert_name: "Threat Expert",
+    overall_status: "Pass",
+    risk_level: "Low",
+    recommended_action: "Approve",
+    confidence_level: "Moderate",
+    rationale_summary:
+      "No credible exploit path or prompt injection risk was identified in the submitted scenario.",
+    framework_references: ["NIST CSF 2.0", "ISO 27001 A.8.2"],
+    requires_human_review: true,
+  },
+  {
+    expert_name: "Behavioral Expert",
+    overall_status: "Fail",
+    risk_level: "High",
+    recommended_action: "Reject",
+    confidence_level: "Moderate",
+    rationale_summary:
+      "Model behavior shifts under pressure and may produce unsafe or biased output patterns.",
+    framework_references: ["IEEE Ethically Aligned Design", "OECD AI Principles 1.4"],
+    requires_human_review: true,
+  },
+];
+
+function getExpertIcon(name: string) {
+  if (name.includes("Governance")) return ShieldCheck;
+  if (name.includes("Threat")) return ShieldAlert;
+  return BrainCircuit;
+}
+
+function ExpertCard({ expert }: { expert: ExpertCardData }) {
+  const Icon = getExpertIcon(expert.expert_name);
+  const interpretation = getHumanInterpretation(
+    expert.expert_name,
+    expert.overall_status,
+    expert.risk_level,
+    expert.recommended_action
+  );
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md">
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="rounded-xl bg-blue-50 p-3 text-blue-700">
+            <Icon className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-slate-900">{expert.expert_name}</h3>
+            <p className="mt-1 text-sm text-slate-500">Independent expert assessment</p>
+          </div>
+        </div>
+
+        <StatusBadge
+          label={expert.overall_status}
+          className={getStatusClasses(expert.overall_status)}
+        />
+      </div>
+
+      <div className="mb-5 flex flex-wrap gap-2">
+        <StatusBadge label={`Risk: ${expert.risk_level}`} className={getRiskClasses(expert.risk_level)} />
+        <StatusBadge
+          label={`Action: ${expert.recommended_action}`}
+          className={getActionClasses(expert.recommended_action)}
+        />
+        <StatusBadge
+          label={`Confidence: ${expert.confidence_level}`}
+          className="bg-slate-100 text-slate-700 border border-slate-200"
+        />
+      </div>
+
+      <div className="mb-5 rounded-2xl bg-slate-50 p-4">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+          What this means
+        </p>
+        <p className="text-sm leading-6 text-slate-700">{interpretation}</p>
+      </div>
+
+      <div className="mb-5">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+          Key finding
+        </p>
+        <p className="text-sm leading-6 text-slate-700">{expert.rationale_summary}</p>
+      </div>
+
+      <div className="mb-5">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+          Framework references
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {expert.framework_references.map((item) => (
+            <span
+              key={item}
+              className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between border-t border-slate-100 pt-4">
+        <span className="text-sm text-slate-500">Human review</span>
+        <span
+          className={`text-sm font-semibold ${
+            expert.requires_human_review ? "text-amber-700" : "text-emerald-700"
+          }`}
+        >
+          {expert.requires_human_review ? "Required" : "Not required"}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export default function ExpertPanelPage({ experts = mockExperts }: Props) {
+  const failCount = experts.filter((e) => e.overall_status === "Fail").length;
+  const highRiskCount = experts.filter((e) => e.risk_level === "High" || e.risk_level === "Critical").length;
+
+  return (
+    <div className="mx-auto max-w-7xl px-6 py-10">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold tracking-tight text-slate-950">Expert Panel</h1>
+        <p className="mt-2 text-base text-slate-500">
+          Independent assessments from each council module
+        </p>
+      </div>
+
+      <div className="mb-8 grid gap-4 md:grid-cols-3">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">Experts reviewed</p>
+          <p className="mt-2 text-3xl font-bold text-slate-950">{experts.length}</p>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">High-risk findings</p>
+          <p className="mt-2 text-3xl font-bold text-red-600">{highRiskCount}</p>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p className="text-sm text-slate-500">Failed assessments</p>
+          <p className="mt-2 text-3xl font-bold text-amber-600">{failCount}</p>
+        </div>
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-3">
+        {experts.map((expert) => (
+          <ExpertCard key={expert.expert_name} expert={expert} />
+        ))}
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="mt-0.5 h-5 w-5 text-amber-700" />
+          <div>
+            <p className="font-semibold text-amber-900">Interpretation note</p>
+            <p className="mt-1 text-sm leading-6 text-amber-800">
+              This view is designed for rapid executive understanding. Each card shows not only
+              the expert outcome, but also the practical meaning of that assessment.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

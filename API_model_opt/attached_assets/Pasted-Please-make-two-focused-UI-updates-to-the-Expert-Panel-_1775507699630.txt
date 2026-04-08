@@ -1,0 +1,54 @@
+Please make two focused UI updates to the Expert Panel section only. Do not redesign the whole page.
+
+1) Upgrade the “Referenced Frameworks” section in demo / fallback expert cards
+Right now the demo cards show generic placeholder copy like:
+“Standard council framework references applied”
+This feels too fake and low-fidelity.
+
+Change it so that:
+- The section still keeps the title:
+  REFERENCED FRAMEWORKS
+- Replace the placeholder sentence with real framework chips / pill tags
+- Match the same visual style already used elsewhere in the product for framework chips:
+  - light gray background
+  - subtle border
+  - rounded pill shape
+  - compact spacing
+  - wraps cleanly across lines
+- If the API returns framework_references, render those directly
+- If framework_references is missing or empty in demo / mock / fallback mode, inject these defaults based on expert type:
+
+Governance Expert
+- UN AI Ethics Guidelines
+- EU AI Act Article 9
+- UNESCO AI Recommendation 2021
+
+Threat Expert
+- NIST CSF 2.0 RS.MI-1
+- ISO 27001 A.8.2
+- MITRE ATT&CK T1190
+
+Behavioral Expert
+- IEEE Ethically Aligned Design
+- OECD AI Principles 1.4
+- ACM Code of Ethics 1.7
+
+Expected result:
+Each demo expert card should show real framework chips instead of generic placeholder text.
+
+2) Make the Expert Panel header icon consistent with the left sidebar icon
+The icon currently used in the Expert Panel header is inconsistent with the left navigation icon style.
+
+Change it so that:
+- The Expert Panel header uses the same icon style / same icon asset / same visual language as the left sidebar icon
+- Keep size, stroke weight, and color visually consistent with the left sidebar system
+- Do not introduce a new icon style
+- Preserve the current header layout and spacing as much as possible
+
+Important:
+- Keep the current card structure
+- Keep the current spacing rhythm and overall look
+- Only improve these two things:
+  1. framework chips in demo expert cards
+  2. Expert Panel header icon consistency
+- No generic fallback text for frameworks should remain after this change

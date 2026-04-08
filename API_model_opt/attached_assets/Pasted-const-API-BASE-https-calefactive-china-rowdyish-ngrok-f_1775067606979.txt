@@ -1,0 +1,73 @@
+const API_BASE = "https://calefactive-china-rowdyish.ngrok-free.dev";
+
+async function submitEvaluation(payload) {
+  try {
+    setError("");
+    setLoading(true);
+
+    console.log("API_BASE =", API_BASE);
+
+    const runUrl = `${API_BASE}/run`;
+    console.log("POST", runUrl);
+
+    const runRes = await fetch(runUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!runRes.ok) {
+      const text = await runRes.text();
+      throw new Error(`Run request failed: ${runRes.status} ${text}`);
+    }
+
+    const runData = await runRes.json();
+    const jobId = runData.job_id;
+
+    const pollInterval = 3000;
+    const maxAttempts = 200;
+
+    for (let i = 0; i < maxAttempts; i++) {
+      await new Promise((resolve) => setTimeout(resolve, pollInterval));
+
+      const statusUrl = `${API_BASE}/status/${jobId}`;
+      console.log("GET", statusUrl);
+
+      const statusRes = await fetch(statusUrl);
+
+      if (!statusRes.ok) {
+        const text = await statusRes.text();
+        throw new Error(`Status request failed: ${statusRes.status} ${text}`);
+      }
+
+      const statusData = await statusRes.json();
+
+      if (statusData.status === "completed") {
+        const resultUrl = `${API_BASE}/result/${jobId}`;
+        console.log("GET", resultUrl);
+
+        const resultRes = await fetch(resultUrl);
+
+        if (!resultRes.ok) {
+          const text = await resultRes.text();
+          throw new Error(`Result request failed: ${resultRes.status} ${text}`);
+        }
+
+        const resultData = await resultRes.json();
+        setResult(resultData.result);
+        setLoading(false);
+        return;
+      }
+
+      if (statusData.status === "failed") {
+        throw new Error(statusData.error || "Evaluation failed");
+      }
+    }
+
+    throw new Error("Evaluation timed out while polling");
+  } catch (err) {
+    console.error(err);
+    setError(err.message || "Failed to fetch");
+    setLoading(false);
+  }
+}

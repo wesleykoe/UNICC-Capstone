@@ -1,0 +1,76 @@
+先引入图标
+import {
+  CheckCircle2,
+  TriangleAlert,
+  PencilLine,
+  ShieldAlert,
+} from "lucide-react";
+2）写一个 decision 配置函数
+function getDecisionConfig(decision?: string) {
+  switch (decision) {
+    case "Approve":
+      return {
+        icon: CheckCircle2,
+        iconClass: "text-emerald-600",
+        badgeClass: "border-emerald-200 bg-emerald-50 text-emerald-700",
+        panelClass: "border-emerald-200 bg-emerald-50",
+      };
+    case "Revise":
+      return {
+        icon: PencilLine,
+        iconClass: "text-blue-600",
+        badgeClass: "border-blue-200 bg-blue-50 text-blue-700",
+        panelClass: "border-blue-200 bg-blue-50",
+      };
+    case "Escalate":
+      return {
+        icon: ShieldAlert,
+        iconClass: "text-amber-600",
+        badgeClass: "border-amber-200 bg-amber-50 text-amber-700",
+        panelClass: "border-amber-200 bg-amber-50",
+      };
+    case "Reject":
+    default:
+      return {
+        icon: TriangleAlert,
+        iconClass: "text-red-600",
+        badgeClass: "border-red-200 bg-red-50 text-red-700",
+        panelClass: "border-red-200 bg-red-50",
+      };
+  }
+}
+3）在 Council hero 里用它
+const decisionValue = currentCouncilView?.final_decision || "Reject";
+const decisionConfig = getDecisionConfig(decisionValue);
+const DecisionIcon = decisionConfig.icon;
+
+然后把原来 hero card 中间那块改成：
+
+<div className={`rounded-2xl border px-8 py-10 text-center ${decisionConfig.panelClass}`}>
+  <div className="flex flex-col items-center justify-center">
+    <DecisionIcon className={`h-16 w-16 ${decisionConfig.iconClass}`} strokeWidth={2.2} />
+
+    <div className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">
+      Final Decision
+    </div>
+
+    <div className={`mt-2 text-6xl font-semibold ${decisionConfig.iconClass}`}>
+      {decisionValue}
+    </div>
+  </div>
+
+  <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+    <span className="rounded-full border bg-white px-4 py-2 text-sm">
+      Risk: {currentCouncilView?.final_risk_level || "High"}
+    </span>
+    <span className="rounded-full border bg-white px-4 py-2 text-sm">
+      Consensus: {currentCouncilView?.consensus_level || "Majority Agreement"}
+    </span>
+    <span className="rounded-full border bg-white px-4 py-2 text-sm">
+      Experts: {currentCouncilView?.experts_reviewed || 0}/3
+    </span>
+    <span className={`rounded-full border px-4 py-2 text-sm ${decisionConfig.badgeClass}`}>
+      Human Review: {currentCouncilView?.human_review_required ? "Required" : "Not Required"}
+    </span>
+  </div>
+</div>

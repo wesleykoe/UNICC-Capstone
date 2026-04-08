@@ -1,0 +1,81 @@
+function computeCouncilView(selectedExperts: Array<[string, any]>) {
+  if (!selectedExperts.length) return null;
+
+  const experts = selectedExperts.map(([name, expert]) => ({
+    name,
+    ...expert,
+  }));
+
+  const actions = experts.map((e) => e.recommended_action);
+  const statuses = experts.map((e) => e.overall_status);
+  const risks = experts.map((e) => e.risk_level);
+  const reviews = experts.map((e) => !!e.requires_human_review);
+  const confidences = experts.map((e) => e.confidence_level);
+
+  let finalDecision = "Approve";
+
+  if (actions.includes("Reject")) {
+    finalDecision = "Reject";
+  } else if (actions.includes("Escalate")) {
+    finalDecision = "Escalate";
+  } else if (statuses.includes("Fail")) {
+    finalDecision = "Escalate";
+  } else if (actions.includes("Revise")) {
+    finalDecision = "Revise";
+  } else if (statuses.includes("Caution")) {
+    finalDecision = "Revise";
+  } else {
+    finalDecision = "Approve";
+  }
+
+  const finalRiskLevel = risks.reduce((max, risk) =>
+    RISK_RANK[risk] > RISK_RANK[max] ? risk : max
+  , risks[0]);
+
+  const humanReviewRequired = reviews.some(Boolean);
+
+  let consensus = "Full Agreement";
+  const uniqueActions = [...new Set(actions)];
+  if (uniqueActions.length === 1) {
+    consensus = "Full Agreement";
+  } else if (uniqueActions.length === 2) {
+    consensus = "Majority Agreement";
+  } else {
+    consensus = "Structured Disagreement";
+  }
+
+  const dominantExpert = experts.reduce((prev, curr) => {
+    return ACTION_RANK[curr.recommended_action] > ACTION_RANK[prev.recommended_action]
+      ? curr
+      : prev;
+  }, experts[0]);
+
+  const confidenceLevel = confidences.reduce((min, conf) =>
+    CONFIDENCE_RANK[conf] < CONFIDENCE_RANK[min] ? conf : min
+  , confidences[0]);
+
+  const rationaleSummary =
+    experts.map((e) => e.rationale_summary).filter(Boolean).join(" | ") ||
+    "Council view generated from selected experts.";
+
+  let recommendedNextStep = "Deployment may proceed with standard monitoring.";
+  if (finalDecision === "Reject") {
+    recommendedNextStep = "System must be redesigned before resubmission.";
+  } else if (finalDecision === "Escalate") {
+    recommendedNextStep = "Route this system to human governance review before deployment.";
+  } else if (finalDecision === "Revise") {
+    recommendedNextStep = "Apply the required revisions and resubmit for council review.";
+  }
+
+  return {
+    final_decision: finalDecision,
+    final_risk_level: finalRiskLevel,
+    experts_reviewed: experts.length,
+    human_review_required: humanReviewRequired,
+    consensus_level: consensus,
+    dominant_expert_influence: dominantExpert.name,
+    confidence_level: confidenceLevel,
+    final_rationale: rationaleSummary,
+    recommended_next_step: recommendedNextStep,
+  };
+}

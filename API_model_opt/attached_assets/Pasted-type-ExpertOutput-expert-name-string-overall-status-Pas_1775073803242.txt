@@ -1,0 +1,61 @@
+type ExpertOutput = {
+  expert_name: string;
+  overall_status: "Pass" | "Caution" | "Fail";
+  risk_level: "Low" | "Moderate" | "High" | "Critical";
+  recommended_action: "Approve" | "Revise" | "Escalate" | "Reject";
+  requires_human_review: boolean;
+  confidence_level: "Low" | "Moderate" | "High";
+  rationale_summary: string;
+  framework_references: string[];
+};
+
+const expertMeta: Record<string, { subtitle: string; role: string }> = {
+  "Governance Expert": {
+    subtitle: "Institutional & Policy Review",
+    role: "Mandate alignment, neutrality, compliance, and institutional legitimacy",
+  },
+  "Threat Expert": {
+    subtitle: "Adversarial & Security Review",
+    role: "Prompt injection, exploitability, misuse containment, and information security",
+  },
+  "Behavioral Expert": {
+    subtitle: "Alignment & Conduct Review",
+    role: "Behavioral consistency, language safety, and alignment under stress",
+  },
+};
+
+function getVerdictTone(status: ExpertOutput["overall_status"]) {
+  switch (status) {
+    case "Pass":
+      return "success";
+    case "Caution":
+      return "warning";
+    case "Fail":
+      return "danger";
+  }
+}
+
+function getImplication(action: ExpertOutput["recommended_action"]) {
+  switch (action) {
+    case "Approve":
+      return "No immediate deployment blocker identified.";
+    case "Revise":
+      return "Deployment is conditionally blocked pending mitigation.";
+    case "Escalate":
+      return "Senior human review required before operational approval.";
+    case "Reject":
+      return "Current system state is not suitable for deployment.";
+  }
+}
+
+function getFindingLabel(expertName: string) {
+  if (expertName === "Governance Expert") return "Institutional Finding";
+  if (expertName === "Threat Expert") return "Security Finding";
+  return "Behavioral Finding";
+}
+
+function formatExecutiveFinding(expert: ExpertOutput) {
+  const text = expert.rationale_summary?.trim();
+  if (!text) return "Assessment completed with structured expert review.";
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}

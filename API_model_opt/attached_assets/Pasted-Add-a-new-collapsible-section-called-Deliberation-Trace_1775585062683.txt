@@ -1,0 +1,81 @@
+Add a new collapsible section called “Deliberation Trace (Expert Dialogue)” to the Council Decision page.
+
+IMPORTANT:
+- Do NOT change any existing layout or structure
+- Do NOT modify existing components
+- This is an ADDITION only
+- Use existing card / typography styles
+
+--------------------------------
+1. LOCATION
+--------------------------------
+Place the new section:
+Below "Deliberation Summary"
+Above the expert cards
+
+--------------------------------
+2. DEFAULT STATE
+--------------------------------
+Collapsed
+
+Show a button or clickable row:
+"🔍 View Deliberation Trace"
+
+--------------------------------
+3. EXPANDED STATE
+--------------------------------
+When expanded, display 3 subsections:
+
+--------------------------------
+A. Expert Critiques
+--------------------------------
+Loop through deliberation_result.critiques
+
+Display format:
+[Source Expert] → [Target Expert]
+critique text
+
+--------------------------------
+B. Expert Defenses
+--------------------------------
+Loop through deliberation_result.defenses
+
+Display format:
+[Expert Name]
+defense text
+
+--------------------------------
+C. Position Updates After Deliberation
+--------------------------------
+If deliberation_result.position_changes is empty:
+Show:
+"No expert changed their position after deliberation."
+
+Else:
+Display:
+[Expert Name]: [Old Action] → [New Action]
+[Updated reasoning]
+
+--------------------------------
+4. DATA SOURCE
+--------------------------------
+Use:
+deliberation_result.critiques
+deliberation_result.defenses
+deliberation_result.position_changes
+
+--------------------------------
+5. DESIGN RULES
+--------------------------------
+- Keep UI clean and minimal
+- Use existing spacing and typography
+- Do not introduce new colors or styles
+- This should feel like an advanced detail panel
+
+--------------------------------
+6. UX GOAL
+--------------------------------
+Default users see only summary
+Advanced users can inspect full deliberation process
+
+This is not a redesign. This is an advanced transparency layer.

@@ -1,0 +1,87 @@
+Please update the wording on the current Council Decision page to align with the new logic:
+deliberation + conservative arbitration.
+
+Important constraints:
+1. Keep the current visual design exactly the same.
+2. Do NOT change layout, spacing, card structure, page flow, navigation, icons, or styling system.
+3. Only update the text content in the existing sections.
+4. Do NOT remove the existing Deliberation Summary section.
+5. Keep the current overall design and data display structure.
+
+Context:
+The product no longer presents the final outcome as simple veto/arbitration language.
+It should now communicate:
+- experts produced structured disagreement
+- the council deliberated on the disagreement
+- a conservative decision approach was applied
+- a single high-confidence, high-severity risk can block deployment
+
+Please replace the current text content with the following:
+
+--------------------------------
+1. WHY THIS DECISION
+--------------------------------
+Replace the full body text with:
+
+"Although Governance and Behavioral Experts assessed the system as acceptable under controlled conditions, the Threat Expert identified a high-severity dual-use risk related to the exposure of tactical patterns.
+
+During deliberation, the council evaluated whether this risk could be sufficiently mitigated within the intended deployment context. Given the potential for misuse and the absence of reliable safeguards at this stage, the risk was treated as a blocking concern.
+
+As a result, despite partial approval, the system is not approved for deployment."
+
+--------------------------------
+2. DELIBERATION SUMMARY — MAIN DISAGREEMENT
+--------------------------------
+Replace with:
+
+"Threat Expert identified a blocking risk, while Governance Expert and Behavioral Expert supported deployment under controlled conditions. This resulted in a structured disagreement requiring council deliberation."
+
+--------------------------------
+3. DELIBERATION SUMMARY — COUNCIL REASONING
+--------------------------------
+Replace with:
+
+"During deliberation, the council determined that the identified risk represents a credible misuse pathway that cannot be sufficiently mitigated under current deployment conditions. Therefore, despite partial approval, the system is not approved for deployment."
+
+--------------------------------
+4. DELIBERATION SUMMARY — FINAL LOGIC
+--------------------------------
+Replace with:
+
+"The council applied a conservative decision approach, where a single high-confidence, high-severity risk is sufficient to block deployment."
+
+--------------------------------
+5. HOW THE COUNCIL REACHED THIS DECISION
+--------------------------------
+Keep the current structure, but ensure the text reads:
+
+"Following council deliberation, the identified high-severity threat risk was upheld as a blocking concern, resulting in a final Reject decision."
+
+--------------------------------
+6. DO NOT CHANGE THESE
+--------------------------------
+Keep these as they are unless needed for data binding:
+- Reject
+- Deployment Not Approved
+- Risk Level: High
+- Consensus: Structured Disagreement
+- Primary Driver: Threat Expert
+- Human Review: Required
+
+--------------------------------
+7. LANGUAGE GOAL
+--------------------------------
+The wording should sound like governance / council reasoning,
+not raw code logic.
+
+Avoid phrases like:
+- veto condition
+- applied rule: Any Reject → Final Reject
+- under council arbitration logic
+
+Prefer phrases like:
+- during deliberation
+- blocking concern
+- conservative decision approach
+- credible misuse pathway
+- could not be sufficiently mitigated

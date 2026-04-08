@@ -1,0 +1,65 @@
+Please redesign the Expert Panel page without changing the overall card-based concept.
+
+What to keep:
+- Keep the three expert cards
+- Keep the overall clean professional style
+- Keep the current information architecture (expert name, status, risk, action, confidence, explanation, key finding, references, human review)
+
+What to improve:
+1. The page currently feels too plain and slightly cramped.
+2. The three cards need more breathing room and stronger visual hierarchy.
+3. The layout should feel more polished, presentation-ready, and like a real expert review workflow.
+
+Design improvements required:
+
+1. Add a review summary section directly under the page title.
+It should visually summarize:
+- total experts reviewed
+- how many passed / failed
+- one short overall review signal
+
+Example:
+"3 experts completed · 2 approve · 1 reject"
+"Behavioral concerns require escalation"
+
+2. Increase spacing and layout balance.
+- Increase gap between the three cards
+- Increase internal padding inside each card
+- Use the available horizontal space better so the page does not feel compressed in the middle
+- Add more vertical spacing between content blocks inside each card
+
+3. Improve card hierarchy.
+Each card should have:
+- a clearer top header area
+- expert icon
+- expert title
+- status badge (Pass / Fail)
+- stronger visibility for Risk / Action / Confidence badges
+
+4. Improve content hierarchy inside each card.
+The sections should feel visually different:
+- “What this means” should be the primary explanation block
+- “Key finding” should be secondary
+- “Framework references” should be lighter and more compact
+
+Do not make all inner content blocks look equally important.
+
+5. Make the cards feel more refined and less flat.
+- Slightly stronger shadows
+- Softer but clearer section backgrounds
+- Better typography hierarchy
+- Slightly larger card titles and slightly more readable body text
+
+6. Preserve the current professional UN-style design language.
+Do not make it overly colorful, playful, or consumer-like.
+The result should feel clean, premium, calm, and institutional.
+
+7. Optional but recommended:
+Add subtle review activity styling so the page feels more alive during demo flow.
+For example:
+- soft pulse on active expert icons
+- staged appearance of badges/content
+- subtle review-progress feel without looking gimmicky
+
+Goal:
+Keep the card-based design, but make the page feel more spacious, polished, and presentation-ready.

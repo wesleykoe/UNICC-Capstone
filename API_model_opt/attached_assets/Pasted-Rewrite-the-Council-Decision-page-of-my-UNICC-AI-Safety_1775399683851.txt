@@ -1,0 +1,185 @@
+Rewrite the "Council Decision" page of my UNICC AI Safety Council frontend.
+
+Context:
+This platform evaluates an AI system using 3 experts:
+- Governance Expert
+- Threat Expert
+- Behavioral Expert
+
+The backend already returns:
+1. council_metadata
+2. expert_outputs
+3. final_council_recommendation
+
+Do NOT change backend logic or API shape.
+This is a frontend/UX redesign task only.
+
+The final council recommendation object contains fields like:
+- final_decision
+- final_risk_level
+- consensus_level
+- summary_of_key_disagreements
+- dominant_expert_influence
+- human_review_required
+- conditions_for_approval
+- mitigation_requirements
+- confidence_level
+- final_rationale
+
+Design goal:
+This page will be presented to UN / humanitarian stakeholders.
+It must feel decision-oriented, trustworthy, calm, and professional.
+Less “developer dashboard”, more “executive risk decision brief”.
+
+Main UX problems to solve:
+- The current page feels too text-heavy and flat
+- The final decision does not have enough visual hierarchy
+- Users cannot understand in 3 seconds: what happened, why, and what to do next
+- The expert outputs and arbitration logic are not translated into plain decision language
+
+Redesign requirements:
+
+1) Create a strong decision hero section at the top
+Show:
+- Final decision (Approve / Revise / Escalate / Reject)
+- Final risk level
+- Human review required or not
+- Dominant expert influence
+- Consensus level
+
+The hero section should visually communicate urgency.
+Examples:
+- Reject = soft red warning panel
+- Escalate = amber/orange panel
+- Revise = yellow panel
+- Approve = green panel
+
+Include a short one-line subtitle under the final decision, such as:
+- “Deployment not approved at this time”
+- “Deployment requires revision before approval”
+- “Deployment may proceed with standard monitoring”
+
+2) Replace the long rationale block with a 3-part decision summary
+Use these 3 cards or stacked sections:
+- Why this decision
+- Operational impact
+- Required next steps
+
+Guidance:
+A. “Why this decision”
+Translate the expert/council result into plain language, concise and readable.
+Example:
+“Behavioral safety concerns were identified under adversarial pressure, which increased deployment risk.”
+
+B. “Operational impact”
+Explain what this means for deployment.
+Example:
+“The system should not be used in live humanitarian workflows until the flagged issues are addressed.”
+
+C. “Required next steps”
+Show actionable bullets derived from:
+- conditions_for_approval
+- mitigation_requirements
+
+3) Add an “Explainability / How the council reached this decision” section
+This is very important.
+Show:
+- Governance Expert result
+- Threat Expert result
+- Behavioral Expert result
+For each expert, display:
+- status
+- risk level
+- recommended action
+- short rationale summary
+
+Also add a small arbitration logic note such as:
+- “One expert issued Reject, so final decision is Reject.”
+- “Caution findings triggered Revise.”
+- “All experts passed, so final decision is Approve.”
+
+This section should make the system feel auditable and transparent.
+
+4) Redesign expert opinion cards
+Each expert card should be compact and executive-friendly.
+Show:
+- Expert name
+- PASS / CAUTION / FAIL badge
+- Risk badge
+- Recommended action badge
+- One-sentence meaning in plain English
+- Framework references as small tags if available
+
+Do not make the cards too large or too verbose.
+
+5) Improve information hierarchy
+Priority order on page:
+1. Final decision
+2. Why
+3. Next steps
+4. Expert breakdown
+5. Technical/report metadata
+
+Move low-priority details such as run ID, timestamp, evaluation time, model version, and arbitration version to a footer/meta section.
+
+6) Add a small “Decision Snapshot” row under the hero section
+Display 4 compact pills or mini-cards:
+- Risk Level
+- Consensus
+- Primary Driver
+- Human Review
+
+7) Make the tone more human and less technical
+Avoid raw backend-style wording.
+Do not dump JSON-like language into the UI.
+Use short labels, readable sentences, and decision-oriented wording.
+
+8) Keep the page visually clean
+Requirements:
+- More whitespace
+- Larger title hierarchy
+- Better section spacing
+- Calm enterprise styling
+- Rounded cards
+- Soft borders
+- Clear badges
+- Minimal but meaningful icons
+
+9) Keep the current tab/page structure intact
+Only rewrite the Council Decision page.
+Do not redesign the whole app.
+Do not break the current data flow.
+
+10) Implement with reusable helpers
+Create helper functions for:
+- decision color theme
+- decision subtitle
+- expert plain-language explanation
+- arbitration explanation
+
+11) Important:
+The page must work for all four final decisions:
+- Approve
+- Revise
+- Escalate
+- Reject
+
+12) Output:
+Please provide:
+- the updated Council Decision page/component code
+- any helper functions
+- any small data-mapping utilities needed
+- minimal CSS/Tailwind adjustments if needed
+
+Style direction:
+Think:
+UN briefing + risk governance + enterprise dashboard
+Not:
+developer console
+Not:
+consumer app
+Not:
+over-designed startup landing page
+
+If you need to infer friendly display text from backend values, do so carefully and consistently.
+Do not change the API contract.
