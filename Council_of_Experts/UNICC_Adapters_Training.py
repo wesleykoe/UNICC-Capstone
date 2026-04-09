@@ -139,7 +139,7 @@ print(f"   Epochs:          {NUM_EPOCHS}")
 from google.colab import userdata
 import huggingface_hub
 
-hf_token = userdata.get('HF_TOKEN')
+hf_token = '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'
 huggingface_hub.login(token=hf_token)
 
 def load_base_model():
