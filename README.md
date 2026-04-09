@@ -1,19 +1,21 @@
-# UNICC AI Safety Council — SLM Platform
+# UNICC AI Safety Lab — Capstone Project
 
 **Council-of-Experts AI Safety Evaluation System**
 Built for the UNICC AI Safety Lab Capstone | NYU MASY GC-4100 | Spring 2026
 
+**Team:** Jun Kim (SLM Platform) · Wesley Koe (Council of Experts) · Dennis Wu (Frontend UI)
+**GitHub:** https://github.com/wesleykoe/UNICC-Capstone
+**Frontend:** https://unicc-ai-guard.replit.app
+
 ---
 
-## What This Does
+## What We Built
 
-This platform evaluates AI systems for safety risks across three expert domains:
+An AI Safety evaluation platform that accepts any AI system as input and returns a structured safety decision from a Council of three independent expert modules.
 
-- **Governance Expert** — Policy compliance, neutrality, institutional mandate alignment (UN AI Ethics, EU AI Act)
-- **Threat Expert** — Adversarial vulnerabilities, prompt injection, misuse potential (NIST CSF, MITRE ATT&CK)
-- **Behavioral Expert** — Behavioral consistency, alignment drift, intent fidelity (IEEE Ethically Aligned Design, OECD AI Principles)
-
-Submit any AI system via GitHub URL or structured JSON → get back a structured council safety decision.
+- **SLM Platform** (`app/slm/`) — FastAPI server running Llama 3.2-3B-Instruct locally. Accepts GitHub URL or structured JSON, routes through three expert modules, applies arbitration rules, returns structured council decision.
+- **Council of Experts** (`Council_of_Experts/`) — Three LoRA fine-tuned expert modules (Governance, Threat, Behavioral) with deliberation layer and rule-based arbitration engine.
+- **Frontend UI** (`UNICC_FrontEnd/`) — React-based web interface hosted on Replit for non-technical stakeholders to submit AI agents and view results.
 
 ---
 
@@ -132,6 +134,18 @@ curl http://localhost:8000/health
 
 ---
 
+## Frontend UI
+
+A React-based frontend is hosted on Replit:
+**https://unicc-ai-guard.replit.app**
+
+To connect the frontend to your local backend:
+1. Run the server locally (`uvicorn app.slm.api:app --host 0.0.0.0 --port 8000`)
+2. Run ngrok (`ngrok http 8000`) to get a public URL
+3. Update the API base URL in the frontend to your ngrok URL
+
+---
+
 ## Example Output
 
 ```json
@@ -174,7 +188,7 @@ curl http://localhost:8000/health
 
 ---
 
-## Architecture
+## System Architecture
 
 ```
 GitHub URL / JSON Input
@@ -184,10 +198,12 @@ GitHub URL / JSON Input
 ┌─────────────────────────────────────┐
 │         Council of Experts          │
 │                                     │
-│  Governance Expert (UN/EU frameworks)│
-│  Threat Expert (NIST/MITRE)         │
-│  Behavioral Expert (IEEE/OECD)      │
+│  Governance Expert (UN/EU/UNESCO)   │
+│  Threat Expert (NIST/MITRE/ISO)     │
+│  Behavioral Expert (IEEE/OECD/ACM)  │
 └─────────────────────────────────────┘
+        ↓
+   Deliberation Layer (critique + defense rounds)
         ↓
    Arbitration Rules v1.1 (Rules 1-6)
         ↓
@@ -214,50 +230,37 @@ GitHub URL / JSON Input
 UNICC-Capstone/
 ├── app/
 │   ├── slm/
-│   │   ├── api.py          # FastAPI — /evaluate, /run, /health endpoints
-│   │   ├── model.py        # Llama 3.2-3B-Instruct loader
-│   │   ├── adapters/       # LoRA expert adapters (pending DGX Llama-3-8B training)
+│   │   ├── api.py              # FastAPI — /evaluate, /run, /health
+│   │   ├── model.py            # Llama 3.2-3B-Instruct loader
+│   │   ├── adapters/           # LoRA expert adapters (pending DGX Llama-3-8B)
 │   │   └── __init__.py
 │   └── __init__.py
 ├── Council_of_Experts/
-│   ├── Schemas/            # Expert output schema v2.0, arbitration rules v1.1
-│   ├── Training_Data/      # Expert training data (governance, threat, behavioral)
-│   └── evaluate_system.py  # Council evaluation pipeline
+│   ├── Schemas/                # Expert output schema v2.0, arbitration rules v1.1
+│   ├── Training_Data/          # 180 domain-specific training examples (60 per expert)
+│   ├── docs/design/            # Expert framework design documents
+│   └── evaluate_system.py      # Council evaluation + deliberation pipeline
+├── UNICC_FrontEnd/             # React UI (Replit hosted)
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .env.example
 ├── requirements.txt
-├── requirements_dgx.txt
-└── README.md
+└── requirements_dgx.txt
 ```
 
 ---
 
 ## DGX Deployment
 
-The platform is designed for NYU DGX cluster deployment:
-
-- Docker containerized (`Dockerfile` + `docker-compose.yml`)
-- CUDA auto-detection in `model.py` (`DEVICE` variable)
-- `requirements_dgx.txt` for lightweight DGX install
-- Deliberation layer activates on DGX with Llama-3-8B adapters
-
 ```bash
 # On DGX
 docker compose up --build
 ```
 
----
-
-## Frontend UI
-
-A React-based frontend is hosted on Replit:
-**https://unicc-ai-guard.replit.app**
-
-To connect the frontend to your local backend:
-1. Run the server locally (`uvicorn app.slm.api:app --host 0.0.0.0 --port 8000`)
-2. Run ngrok (`ngrok http 8000`) to get a public URL
-3. Update the API base URL in the frontend settings to your ngrok URL
+- Docker containerized (`Dockerfile` + `docker-compose.yml`)
+- CUDA auto-detection in `model.py`
+- `requirements_dgx.txt` for DGX-optimized install
+- Deliberation layer + LoRA adapters activate on DGX with Llama-3-8B
 
 ---
 
