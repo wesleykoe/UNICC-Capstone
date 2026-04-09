@@ -1,52 +1,75 @@
 # UNICC AI Safety Lab — Council of Experts System
 
-This project is a frontend interface for an AI risk evaluation system developed as part of the UNICC AI Safety Lab Capstone.
+This repository contains our Spring 2026 UNICC AI Safety Lab capstone project: a **Council of Experts AI Safety Evaluation System** for evaluating AI agents before deployment.
 
-It implements a "Council of Experts" framework where multiple AI experts evaluate a scenario and produce a final governance decision.
-
----
-
-## 🌐 Live Demo
-
-👉https://unicc-ai-guard.replit.app/
+The system combines three expert perspectives into a structured governance workflow and produces a final safety decision that is transparent, reviewable, and integration-ready.
 
 ---
 
-## 🧠 Project Architecture
+## Overview
 
-The system follows a multi-expert evaluation pipeline:
+This project addresses a core UNICC problem:
 
-1. **Scenario Input**  
-   User provides an AI deployment scenario
+> How can AI systems be evaluated for safety, governance alignment, and operational trustworthiness before deployment in institutional environments?
 
-2. **Expert Review Layer**
-   - Governance Expert → policy & compliance risks  
-   - Threat Expert → adversarial / misuse risks  
-   - Behavioral Expert → societal & ethical impact  
-
-3. **Deliberation Layer**
-   - Experts critique and defend positions  
-   - Cross-expert reasoning is surfaced  
-
-4. **Council Decision**
-   - Aggregated final decision (Approve / Reject)  
-   - Risk summary + recommended actions  
+To address this, we implement a **Council of Experts** architecture in which multiple expert modules independently evaluate an AI scenario and contribute to a final council-level decision.
 
 ---
 
-## 📁 Project Structure
+## System Architecture
+
+The system follows a multi-stage evaluation pipeline:
+
+### 1. Scenario Input
+A user submits an AI deployment scenario, system description, or evaluation case.
+
+### 2. Expert Review Layer
+Three independent expert modules evaluate the scenario from different perspectives:
+
+- **Governance Expert** → policy, compliance, and governance alignment
+- **Threat Expert** → misuse, adversarial, jailbreak, and security risks
+- **Behavioral Expert** → ethical, social, and unsafe behavioral impacts
+
+### 3. Deliberation Layer
+Expert outputs are surfaced together and combined into a higher-level deliberation process.
+
+### 4. Council Decision
+The system returns:
+
+- final recommendation (Approve / Reject)
+- risk summary
+- expert findings
+- recommended actions
+
+---
+
+## Live Demo
+
+Frontend demo:
+
+**https://unicc-ai-guard.replit.app/**
+
+---
+
+## Repository Structure
 
 ```bash
-attached_assets/   # Static assets (images, demo data, UI references)
-
-lib/               # Core frontend logic
-  ├── components/  # UI components (Expert cards, panels, etc.)
-  ├── pages/       # Page-level views (Run, Council, Dashboard)
-  ├── utils/       # Helper functions (API handling, formatting)
-  └── types/       # Type definitions (data models)
-
-scripts/           # Utility scripts / build helpers
-
-package.json       # Project dependencies & scripts
-pnpm-lock.yaml     # Dependency lock file
-tsconfig.json      # TypeScript configuration
+UNICC-Capstone/
+│
+├── UNICC_FrontEnd/           # Frontend interface (Replit-hosted UI)
+│   ├── attached_assets/
+│   ├── lib/
+│   ├── scripts/
+│   ├── README.md
+│   ├── package.json
+│   └── ...
+│
+├── app/
+│   └── slm/
+│       ├── __init__.py
+│       ├── api.py            # Main FastAPI backend entry
+│       └── model.py          # Local SLM / inference logic
+│
+├── requirements.txt
+├── README.md                 # Root project README
+└── ...
