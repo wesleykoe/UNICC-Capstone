@@ -297,23 +297,3 @@ This project was developed for the **UNICC AI Safety Lab (Spring 2026)**.
 The goal is to operationalize AI safety evaluation through a modular, auditable, and multi-expert system suitable for institutional deployment.
  
 ---
- 
-## Future Improvements
- 
-- Stronger backend endpoint documentation
-- Expanded evaluation test cases
-- PDF report generation
-- Improved arbitration logic
-- DGX deployment support
-- Adapter packaging improvements
- 
----
- 
-## Reviewer Checklist
- 
-- [ ] Live frontend demo
-- [ ] Frontend code
-- [ ] Backend API
-- [ ] Setup instructions
-- [ ] Reproducibility steps
-- [ ] Architecture explanation
