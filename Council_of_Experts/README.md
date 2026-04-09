@@ -529,16 +529,14 @@ result = evaluate(scenario_input, use_deliberation=True)
 ```
 
 ### Adapter Paths
-All paths are controlled by `ADAPTER_PATHS` in `evaluate_system.py`:
+Trained LoRA adapter weights are not included in this repository due to file size (~50-100MB each).
 
-```python
-ADAPTER_PATHS = {
-    "Governance Expert": "./Training_Data/adapters/governance_adapter",
-    "Threat Expert":     "./Training_Data/adapters/threat_adapter",
-    "Behavioral Expert": "./Training_Data/adapters/behavioral_adapter",
-}
-```
+**To obtain the adapters:**
 
+- **Retrain from scratch** — run `UNICC_Adapters.ipynb` sequentially using the training data in `Council_of_Experts/Training_Data`. All three adapters will be saved to `Training_Data/adapters/` automatically after Cells 8-10 complete.
+- **Download** — pre-trained adapter weights are available here: [UNICC Adapter Weights](https://drive.google.com/drive/folders/1YDWrhG_4TGd69XhPkv4w1qOjKbaCwpLi?usp=drive_link)
+
+Once adapters are available, place them at:
 ---
 
 ## Testing
