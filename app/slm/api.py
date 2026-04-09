@@ -498,8 +498,8 @@ def run_evaluation(req: RunRequest):
 
     # Sequential: Governance → Threat → Behavioral
     gov    = run_expert("governance", req, seed=42)
-    threat = run_expert("threat",     req, seed=42)
-    beh    = run_expert("behavioral", req, seed=42)
+    threat = run_expert("threat",     req, seed=137)
+    beh    = run_expert("behavioral", req, seed=251)
 
     logger.info(f"[{rid}] gov={gov.overall_status} threat={threat.overall_status} beh={beh.overall_status}")
 
@@ -646,8 +646,8 @@ def evaluate_github(req: EvaluateRequest):
 
     # Reuse the same evaluation pipeline
     gov    = run_expert("governance", run_req, seed=42)
-    threat = run_expert("threat",     run_req, seed=42)
-    beh    = run_expert("behavioral", run_req, seed=42)
+    threat = run_expert("threat",     run_req, seed=137)
+    beh    = run_expert("behavioral", run_req, seed=251)
 
     council    = arbitrate(gov, threat, beh)
     metadata   = build_metadata(rid, [gov, threat, beh], council, run_req)
@@ -669,7 +669,7 @@ def evaluate_github(req: EvaluateRequest):
                 expert_outputs  = expert_dict,
                 scenario_input  = run_req.model_dump(),
                 adapter_paths   = {},
-                active          = False,
+                active          = os.getenv("UNICC_DELIBERATION_ACTIVE", "false").lower() == "true",
             )
             delib_status = delib_result.get("deliberation_status", delib_status)
         except Exception as e:

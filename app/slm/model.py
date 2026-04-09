@@ -3,7 +3,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, set_seed
 
 BASE_MODEL_ID = os.getenv("BASE_MODEL_ID", "meta-llama/Llama-3.2-3B-Instruct")
-DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
+DEVICE = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
 def load_pipe(model_id: str = BASE_MODEL_ID):
     print(f"Loading {model_id} on {DEVICE}...")
