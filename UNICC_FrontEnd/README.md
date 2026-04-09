@@ -319,5 +319,3 @@ The goal is to operationalize AI safety evaluation through a modular, auditable,
 - [ ] Architecture explanation
  
 ---
- 
-## License
