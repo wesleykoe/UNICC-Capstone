@@ -45,9 +45,9 @@ _BASE = os.getenv(
 )
 
 ADAPTER_PATHS = {
-    "Governance Expert": os.path.join(_BASE, "governance_adapter"),
-    "Threat Expert":     os.path.join(_BASE, "threat_adapter"),
-    "Behavioral Expert": os.path.join(_BASE, "behavioral_adapter"),
+    "Governance Expert": os.getenv("UNICC_GOV_ADAPTER",  "Wesleykoe01/unicc-governance-adapter"),
+    "Threat Expert":     os.getenv("UNICC_THR_ADAPTER",  "Wesleykoe01/unicc-threat-adapter"),
+    "Behavioral Expert": os.getenv("UNICC_BEH_ADAPTER",  "Wesleykoe01/unicc-behavioral-adapter"),
 }
 
 # Arbitration rule set version
