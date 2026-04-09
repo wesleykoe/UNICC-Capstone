@@ -58,6 +58,11 @@ python -c "from huggingface_hub import login; login()"
 uvicorn app.slm.api:app --host 0.0.0.0 --port 8000
 ```
 
+To enable the deliberation layer (critique + defense rounds):
+```bash
+UNICC_DELIBERATION=true uvicorn app.slm.api:app --host 0.0.0.0 --port 8000
+```
+
 Server runs at: `http://localhost:8000`
 Interactive docs: `http://localhost:8000/docs`
 

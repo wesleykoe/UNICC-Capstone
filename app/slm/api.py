@@ -653,6 +653,28 @@ def evaluate_github(req: EvaluateRequest):
     metadata   = build_metadata(rid, [gov, threat, beh], council, run_req)
     latency_ms = int((time.time() - t0) * 1000)
 
+    # Run deliberation layer
+    delib_critiques = []
+    delib_defenses  = []
+    delib_status    = "pending_dgx — deliberation layer activates on Llama-3-8B"
+
+    if DELIBERATION_AVAILABLE and USE_DELIBERATION:
+        try:
+            expert_dict = {
+                "Governance Expert": gov.model_dump(),
+                "Threat Expert":     threat.model_dump(),
+                "Behavioral Expert": beh.model_dump(),
+            }
+            delib_result = _deliberate(
+                expert_outputs  = expert_dict,
+                scenario_input  = run_req.model_dump(),
+                adapter_paths   = {},
+                active          = False,
+            )
+            delib_status = delib_result.get("deliberation_status", delib_status)
+        except Exception as e:
+            logger.warning(f"Deliberation failed: {e}")
+
     logger.info(f"[{rid}] /evaluate decision={council.final_decision} latency={latency_ms}ms")
 
     return RunResponse(
@@ -666,9 +688,9 @@ def evaluate_github(req: EvaluateRequest):
             "Threat Expert":     threat,
             "Behavioral Expert": beh,
         },
-        deliberation_critiques=[],
-        deliberation_defenses=[],
-        deliberation_status="pending_dgx — deliberation layer activates on Llama-3-8B",
+        deliberation_critiques=delib_critiques,
+        deliberation_defenses=delib_defenses,
+        deliberation_status=delib_status,
         final_council_recommendation=council,
         latency_ms=latency_ms,
     )
