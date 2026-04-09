@@ -31,7 +31,9 @@ from peft import PeftModel
 # CONFIGURATION
 # ================================================================
 
-# Base model — swap to "facebook/opt-1.3b" on DGX
+# Base model
+# Development: "facebook/opt-1.3b"
+# Production:  "meta-llama/Meta-Llama-3-8B-Instruct" (DGX)
 MODEL_NAME = "meta-llama/Meta-Llama-3-8B-Instruct"
 
 # Adapter paths — update to match your Drive structure
@@ -157,7 +159,7 @@ def extract_json(raw_output):
         return json.loads(json_str)
 
     except json.JSONDecodeError:
-    return None
+        return None
     
     except Exception:
         return None
@@ -531,7 +533,7 @@ def deliberate(expert_outputs, scenario_input, adapter_paths, active=False):
                 continue
             critique = run_critique(
                 critic_role    = critic_role,
-                adapter_path   = adapter_paths[critic_role],
+                critic_adapter   = adapter_paths[critic_role],
                 critic_output  = expert_outputs[critic_role],
                 target_role    = target_role,
                 target_output  = expert_outputs[target_role],
@@ -551,7 +553,7 @@ def deliberate(expert_outputs, scenario_input, adapter_paths, active=False):
         ]
         defense = run_defense(
             defender_role              = defender_role,
-            adapter_path               = adapter_paths[defender_role],
+            defender_adapter               = adapter_paths[defender_role],
             defender_output            = expert_outputs[defender_role],
             critiques_against_defender = critiques_against,
             scenario_input             = scenario_input
@@ -754,19 +756,16 @@ def evaluate(scenario_input, use_deliberation=False):
             expert_role, adapter_path, scenario_input
         )
 
-    # ── Layer 1.5: Deliberation (optional) ───────────────────
-    deliberation_result = None
-    final_expert_outputs = expert_outputs
+    # ── Layer 1.5: Deliberation ─────────────────
 
-    if use_deliberation:
-        deliberation_result  = deliberate(
-            expert_outputs  = expert_outputs,
-            scenario_input  = scenario_input,
-            adapter_paths   = ADAPTER_PATHS
-            active          = use_deliberation
-        )
-        # Use updated positions after deliberation for arbitration
-        final_expert_outputs = deliberation_result['final_outputs']
+    deliberation_result  = deliberate(
+        expert_outputs  = expert_outputs,
+        scenario_input  = scenario_input,
+        adapter_paths   = ADAPTER_PATHS,
+        active          = use_deliberation
+    )
+    # Use updated positions after deliberation for arbitration
+    final_expert_outputs = deliberation_result['final_outputs']
 
     # ── Layer 2: Arbitration ─────────────────────────────────
     print(f"\n  Running arbitration...")
