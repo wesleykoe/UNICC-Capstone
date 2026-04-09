@@ -36,15 +36,24 @@ from peft import PeftModel
 # Production:  "meta-llama/Meta-Llama-3-8B-Instruct" (DGX)
 MODEL_NAME = "meta-llama/Meta-Llama-3-8B-Instruct"
 
-# Adapter paths — update to match your Drive structure
+# Adapter paths:
+import os
+
+_BASE = os.getenv(
+    "UNICC_ADAPTER_BASE",
+    os.path.join(os.path.dirname(__file__), "Training_Data", "adapters")
+)
+
 ADAPTER_PATHS = {
-    "Governance Expert": "/content/drive/MyDrive/Class/Capstone/Training_Data/adapters/governance_adapter",
-    "Threat Expert":     "/content/drive/MyDrive/Class/Capstone/Training_Data/adapters/threat_adapter",
-    "Behavioral Expert": "/content/drive/MyDrive/Class/Capstone/Training_Data/adapters/behavioral_adapter",
+    "Governance Expert": os.path.join(_BASE, "governance_adapter"),
+    "Threat Expert":     os.path.join(_BASE, "threat_adapter"),
+    "Behavioral Expert": os.path.join(_BASE, "behavioral_adapter"),
 }
 
 # Arbitration rule set version
 ARBITRATION_VERSION = "v1.0"
+
+USE_DELIBERATION = os.getenv("UNICC_DELIBERATION", "false").lower() == "true"
 
 # Schema shown to model during inference — must match training prompt
 EXPERT_SCHEMA = (
@@ -862,5 +871,5 @@ if __name__ == "__main__":
         ]
     }
 
-    result = evaluate(test_scenario)
+    result = evaluate(test_scenario, use_deliberation=USE_DELIBERATION)
     print(json.dumps(result, indent=2))
