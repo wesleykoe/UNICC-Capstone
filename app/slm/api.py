@@ -14,7 +14,7 @@ except ImportError:
     DELIBERATION_AVAILABLE = False
     logger.warning("deliberate() not available — deliberation will be stub")
 
-USE_DELIBERATION = os.getenv("UNICC_DELIBERATION", "false").lower() == "true"
+USE_DELIBERATION = os.getenv("UNICC_DELIBERATION", "true").lower() == "true"
 
 # ─────────────────────────────────────────
 # Logging
