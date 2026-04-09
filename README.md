@@ -24,6 +24,11 @@ Submit any AI system via GitHub URL or structured JSON → get back a structured
 - Python 3.11+
 - HuggingFace account with **Llama 3 access approved**
   → Request access: https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct
+- **GPU strongly recommended** — Llama 3.2-3B requires ~6GB RAM minimum
+  - Apple M1/M2 Mac: runs on MPS (expect 30-120s per evaluation)
+  - NVIDIA GPU: runs on CUDA (fastest)
+  - CPU only: will be very slow or may run out of memory
+- Expected model load time: 1-3 minutes on first run
 
 ### Step 1 — Clone and install
 
@@ -236,6 +241,18 @@ The platform is designed for NYU DGX cluster deployment:
 # On DGX
 docker compose up --build
 ```
+
+---
+
+## Frontend UI
+
+A React-based frontend is hosted on Replit:
+**https://unicc-ai-guard.replit.app**
+
+To connect the frontend to your local backend:
+1. Run the server locally (`uvicorn app.slm.api:app --host 0.0.0.0 --port 8000`)
+2. Run ngrok (`ngrok http 8000`) to get a public URL
+3. Update the API base URL in the frontend settings to your ngrok URL
 
 ---
 
