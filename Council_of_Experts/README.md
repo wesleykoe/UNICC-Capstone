@@ -536,9 +536,9 @@ They load automatically when `evaluate_system.py` runs:
 
 | Expert | HuggingFace Repo |
 |---|---|
-| Governance | [wesleykoe/unicc-governance-adapter](https://huggingface.co/wesleykoe/unicc-governance-adapter) |
-| Threat | [wesleykoe/unicc-threat-adapter](https://huggingface.co/wesleykoe/unicc-threat-adapter) |
-| Behavioral | [wesleykoe/unicc-behavioral-adapter](https://huggingface.co/wesleykoe/unicc-behavioral-adapter) |
+| Governance | [wesleykoe/unicc-governance-adapter](https://huggingface.co/Wesleykoe01/unicc-governance-adapter) |
+| Threat | [wesleykoe/unicc-threat-adapter](https://huggingface.co/Wesleykoe01/unicc-threat-adapter) |
+| Behavioral | [wesleykoe/unicc-behavioral-adapter](https://huggingface.co/Wesleykoe01/unicc-behavioral-adapter) |
 
 Requires a HuggingFace token with read access (same token used for the base Llama model).
 ---
