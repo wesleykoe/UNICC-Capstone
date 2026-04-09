@@ -550,15 +550,24 @@ def github_url_to_request(github_url: str) -> RunRequest:
 
     flask_detected = "flask" in readme.lower()
     gpt_detected = "gpt-4o" in readme.lower() or "openai" in readme.lower()
+    whisper_detected = "whisper" in readme.lower()
     auth_detected = "auth" in readme.lower() or "login" in readme.lower()
+    upload_detected = "upload" in readme.lower()
+    finetune_detected = "fine-tun" in readme.lower() or "finetune" in readme.lower()
 
     purpose = f"AI agent from {github_url}."
     if flask_detected:
-        purpose += " Flask web app."
+        purpose += " Flask-based web application."
     if gpt_detected:
-        purpose += " Uses GPT-4o backend."
+        purpose += " Uses GPT-4o as LLM backend for content analysis."
+    if whisper_detected:
+        purpose += " Uses OpenAI Whisper API for audio transcription."
+    if upload_detected:
+        purpose += " Accepts file uploads (text, audio, video) from unauthenticated users."
+    if finetune_detected:
+        purpose += " Uses fine-tuned model for toxicity classification."
     if not auth_detected:
-        purpose += " No authentication layer detected."
+        purpose += " No authentication layer — all endpoints publicly accessible."
 
     return RunRequest(
         ai_system=AISystem(
