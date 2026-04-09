@@ -538,12 +538,7 @@ They load automatically when `evaluate_system.py` runs:
 |---|---|
 | Governance | [Wesleykoe01/unicc-governance-adapter](https://huggingface.co/Wesleykoe01/governance-adapter) |
 | Threat | [wesleykoe01/unicc-threat-adapter](https://huggingface.co/Wesleykoe01/unicc-threat-adapter) |
-| Behavioral | [wesleykoe01/unicc-behavioral-adapter](https://huggingface.co/Wesleykoe01/unicc-behavioral-adapterhttps://huggingface.co/Wesleykoe01/unicc-behavioral-adapterhttps://huggingface.co/Wesleykoe01/governance-adapter
-https://huggingface.co/Wesleykoe01/governance-adapter
-https://huggingface.co/Wesleykoe01/governance-adapter
-
-https://huggingface.co/Wesleykoe01/unicc-behavioral-adapter
-https://huggingface.co/Wesleykoe01/unicc-behavioral-adapter) |
+| Behavioral | [wesleykoe01/unicc-behavioral-adapter](https://huggingface.co/Wesleykoe01/unicc-behavioral-adapter) |
 
 Requires a HuggingFace token with read access (same token used for the base Llama model).
 ---
