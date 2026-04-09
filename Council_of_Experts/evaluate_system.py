@@ -208,6 +208,10 @@ def normalize_expert_output(parsed, expert_role):
     if not parsed.get('rationale_summary'):
         parsed['rationale_summary'] = f"{expert_role} evaluation completed."
 
+    # Handle singular key variant from model output
+    if 'framework_reference' in parsed and 'framework_references' not in parsed:
+        parsed['framework_references'] = [parsed.pop('framework_reference')]
+
     # Ensure framework_references is a list
     fw = parsed.get('framework_references', [])
     if not isinstance(fw, list):
