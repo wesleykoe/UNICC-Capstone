@@ -6,6 +6,16 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field, ValidationError
 from app.slm.model import load_pipe, generate_text
 
+# Import deliberation layer from Council of Experts
+try:
+    from Council_of_Experts.evaluate_system import deliberate as _deliberate
+    DELIBERATION_AVAILABLE = True
+except ImportError:
+    DELIBERATION_AVAILABLE = False
+    logger.warning("deliberate() not available — deliberation will be stub")
+
+USE_DELIBERATION = os.getenv("UNICC_DELIBERATION", "false").lower() == "true"
+
 # ─────────────────────────────────────────
 # Logging
 # ─────────────────────────────────────────
@@ -499,6 +509,28 @@ def run_evaluation(req: RunRequest):
 
     logger.info(f"[{rid}] decision={council.final_decision} rule={council.triggered_rule} latency={latency_ms}ms")
 
+    # Run deliberation layer
+    delib_critiques = []
+    delib_defenses  = []
+    delib_status    = "pending_dgx — deliberation layer activates on Llama-3-8B"
+
+    if DELIBERATION_AVAILABLE and USE_DELIBERATION:
+        try:
+            expert_dict = {
+                "Governance Expert": gov.model_dump(),
+                "Threat Expert":     threat.model_dump(),
+                "Behavioral Expert": beh.model_dump(),
+            }
+            delib_result = _deliberate(
+                expert_outputs  = expert_dict,
+                scenario_input  = req.model_dump(),
+                adapter_paths   = {},
+                active          = False,
+            )
+            delib_status = delib_result.get("deliberation_status", delib_status)
+        except Exception as e:
+            logger.warning(f"Deliberation failed: {e}")
+
     return RunResponse(
         request_id=rid,
         model_id=MODEL_ID,
@@ -510,9 +542,9 @@ def run_evaluation(req: RunRequest):
             "Threat Expert":     threat,
             "Behavioral Expert": beh,
         },
-        deliberation_critiques=[],
-        deliberation_defenses=[],
-        deliberation_status="pending_dgx — deliberation layer activates on Llama-3-8B",
+        deliberation_critiques=delib_critiques,
+        deliberation_defenses=delib_defenses,
+        deliberation_status=delib_status,
         final_council_recommendation=council,
         latency_ms=latency_ms,
     )
