@@ -497,44 +497,41 @@ def run_defense(defender_role, defender_adapter, defender_output,
     return parsed
 
 
-def deliberate(expert_outputs, scenario_input, adapter_paths):
+def deliberate(expert_outputs, scenario_input, adapter_paths, active=False):
     """
-    Run full deliberation phase — critique + defense rounds.
-
-    Each expert critiques the other two.
-    Each expert then defends against critiques directed at them.
-    Position changes are tracked and returned.
-
-    Args:
-        expert_outputs: Dict of {expert_role: parsed_output_dict}
-        scenario_input: Original scenario input dict
-        adapter_paths:  Dict of {expert_role: adapter_path}
-
-    Returns:
-        deliberation_result dict containing:
-            - critiques:        all critique outputs
-            - defenses:         all defense outputs
-            - position_changes: any experts who changed position
-            - final_outputs:    updated expert outputs after deliberation
+    Run deliberation phase — critique round + defense round.
+    If active=False, returns a stub result with empty critiques
+    and defenses. Arbitration still uses original expert outputs.
+    Set active=True on LLaMA-3-8B on DGX for full deliberation.
     """
     print(f"\n  {'='*56}")
-    print(f"  DELIBERATION PHASE")
+    print(f"  DELIBERATION PHASE — {'Active' if active else 'Stub (pending DGX)'}")
     print(f"  {'='*56}")
 
+    # ── Stub mode — deliberation not active ─────────────────
+    if not active:
+        return {
+            "deliberation_status":   "pending_dgx",
+            "critiques":             [],
+            "defenses":              [],
+            "position_changes":      {},
+            "final_outputs":         expert_outputs
+        }
+
+    # ── Full deliberation — runs on LLaMA-3-8B only ─────────
     expert_roles = list(expert_outputs.keys())
 
-    # ── Round 1: Critique Phase ──────────────────────────────
+    # Round 1: Critique Phase
     print(f"\n  Round 1 — Critique Phase")
     critiques = {}
-
     for critic_role in expert_roles:
         critiques[critic_role] = {}
         for target_role in expert_roles:
             if critic_role == target_role:
-                continue  # Don't critique yourself
+                continue
             critique = run_critique(
                 critic_role    = critic_role,
-                critic_adapter = adapter_paths[critic_role],
+                adapter_path   = adapter_paths[critic_role],
                 critic_output  = expert_outputs[critic_role],
                 target_role    = target_role,
                 target_output  = expert_outputs[target_role],
@@ -542,31 +539,28 @@ def deliberate(expert_outputs, scenario_input, adapter_paths):
             )
             critiques[critic_role][target_role] = critique
 
-    # ── Round 2: Defense Phase ───────────────────────────────
+    # Round 2: Defense Phase
     print(f"\n  Round 2 — Defense Phase")
     defenses = {}
-
     for defender_role in expert_roles:
-        # Collect all critiques directed at this expert
         critiques_against = [
             critiques[critic][defender_role]
             for critic in expert_roles
             if critic != defender_role
-            and defender_role in critiques[critic]
+            and defender_role in critiques.get(critic, {})
         ]
-
         defense = run_defense(
             defender_role              = defender_role,
-            defender_adapter           = adapter_paths[defender_role],
+            adapter_path               = adapter_paths[defender_role],
             defender_output            = expert_outputs[defender_role],
             critiques_against_defender = critiques_against,
             scenario_input             = scenario_input
         )
         defenses[defender_role] = defense
 
-    # ── Track Position Changes ───────────────────────────────
+    # Track Position Changes
     position_changes = {}
-    final_outputs    = dict(expert_outputs)  # Start with originals
+    final_outputs    = {k: dict(v) for k, v in expert_outputs.items()}
 
     for role, defense in defenses.items():
         if defense.get('position_changed', False):
@@ -580,8 +574,6 @@ def deliberate(expert_outputs, scenario_input, adapter_paths):
                     "original": f"{original_status} | {original_action}",
                     "updated":  f"{updated_status} | {updated_action}"
                 }
-                # Update final outputs with new position
-                final_outputs[role] = dict(expert_outputs[role])
                 final_outputs[role]['recommended_action'] = updated_action
                 final_outputs[role]['overall_status']     = updated_status
                 print(f"    ⚠️  {role} changed position: "
@@ -593,10 +585,11 @@ def deliberate(expert_outputs, scenario_input, adapter_paths):
     print(f"     Position changes:    {len(position_changes)}")
 
     return {
-        "critiques":        critiques,
-        "defenses":         defenses,
-        "position_changes": position_changes,
-        "final_outputs":    final_outputs
+        "deliberation_status":   "complete",
+        "critiques":             critiques,
+        "defenses":              defenses,
+        "position_changes":      position_changes,
+        "final_outputs":         final_outputs
     }
 
 # ================================================================
@@ -770,6 +763,7 @@ def evaluate(scenario_input, use_deliberation=False):
             expert_outputs  = expert_outputs,
             scenario_input  = scenario_input,
             adapter_paths   = ADAPTER_PATHS
+            active          = use_deliberation
         )
         # Use updated positions after deliberation for arbitration
         final_expert_outputs = deliberation_result['final_outputs']
