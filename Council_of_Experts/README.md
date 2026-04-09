@@ -531,12 +531,16 @@ result = evaluate(scenario_input, use_deliberation=True)
 ### Adapter Paths
 Trained LoRA adapter weights are not included in this repository due to file size (~50-100MB each).
 
-**To obtain the adapters:**
+**Adapter weights** are hosted on HuggingFace Hub — no manual download needed.
+They load automatically when `evaluate_system.py` runs:
 
-- **Retrain from scratch** — run `UNICC_Adapters.ipynb` sequentially using the training data in `Council_of_Experts/Training_Data`. All three adapters will be saved to `Training_Data/adapters/` automatically after Cells 8-10 complete.
-- **Download** — pre-trained adapter weights are available here: [UNICC Adapter Weights](https://drive.google.com/drive/folders/1YDWrhG_4TGd69XhPkv4w1qOjKbaCwpLi?usp=drive_link)
+| Expert | HuggingFace Repo |
+|---|---|
+| Governance | [wesleykoe/unicc-governance-adapter](https://huggingface.co/wesleykoe/unicc-governance-adapter) |
+| Threat | [wesleykoe/unicc-threat-adapter](https://huggingface.co/wesleykoe/unicc-threat-adapter) |
+| Behavioral | [wesleykoe/unicc-behavioral-adapter](https://huggingface.co/wesleykoe/unicc-behavioral-adapter) |
 
-Once adapters are available, place them at:
+Requires a HuggingFace token with read access (same token used for the base Llama model).
 ---
 
 ## Testing
