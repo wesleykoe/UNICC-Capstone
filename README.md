@@ -128,6 +128,16 @@ curl -X POST http://localhost:8000/run \
   }'
 ```
 
+### `POST /report` — Human-readable markdown report
+
+Same as `/evaluate` but returns a formatted markdown report instead of JSON — designed for non-technical UNICC stakeholders:
+
+```bash
+curl -X POST http://localhost:8000/report \
+  -H "Content-Type: application/json" \
+  -d '{"github_url": "https://github.com/FlashCarrot/VeriMedia"}'
+```
+
 ### `GET /health`
 
 ```bash
