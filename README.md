@@ -65,6 +65,8 @@ To enable the deliberation layer (critique + defense rounds):
 ```bash
 UNICC_DELIBERATION=true uvicorn app.slm.api:app --host 0.0.0.0 --port 8000
 ```
+> **LLM Backend:** By default the system runs on local Llama 3.2-3B. To use Claude (Anthropic) as the LLM backend — which produces more stable and distinct expert outputs — set `LLM_BACKEND=anthropic` and `ANTHROPIC_API_KEY=your_key` in your `.env` file.
+
 > **Note on deliberation status:** If you see `deliberation_status: "pending_dgx"`, this is expected — not a failure. Set `UNICC_DELIBERATION_ACTIVE=true` to activate cross-expert critique and defense rounds on GPU hardware.
 
 Server runs at: `http://localhost:8000`

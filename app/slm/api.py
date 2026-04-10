@@ -6,6 +6,36 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field, ValidationError
 from app.slm.model import load_pipe, generate_text
 
+# ── LLM Backend selector ──────────────────────────────────
+LLM_BACKEND = os.getenv("LLM_BACKEND", "local")  # "local" or "anthropic"
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+
+def generate_text_anthropic(system_prompt: str, user_prompt: str) -> str:
+    """Call Claude via Anthropic API as LLM backend."""
+    import httpx
+    headers = {
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+    }
+    body = {
+        "model": "claude-sonnet-4-20250514",
+        "max_tokens": 1000,
+        "system": system_prompt,
+        "messages": [{"role": "user", "content": user_prompt}],
+    }
+    r = httpx.post("https://api.anthropic.com/v1/messages", json=body, headers=headers, timeout=60)
+    r.raise_for_status()
+    return r.json()["content"][0]["text"]
+
+def generate_text_backend(system_prompt: str, user_prompt: str) -> str:
+    """Route to Anthropic or local Llama based on LLM_BACKEND env var."""
+    if LLM_BACKEND == "anthropic" and ANTHROPIC_API_KEY:
+        return generate_text_anthropic(system_prompt, user_prompt)
+    else:
+        pipe = load_pipe()
+        return generate_text(pipe, user_prompt, system_prompt=system_prompt)
+
 # Import deliberation layer from Council of Experts
 try:
     from Council_of_Experts.evaluate_system import deliberate as _deliberate
@@ -305,14 +335,7 @@ def expert_fallback(expert_id: str) -> ExpertOutput:
 # ─────────────────────────────────────────
 
 def run_expert(expert_id: str, request: RunRequest, seed: int = 42) -> ExpertOutput:
-    prompt = build_prompt(expert_id, request)
-    raw = generate_text(
-        pipe, prompt,
-        expert_id=expert_id,
-        system_prompt=SYSTEM_PROMPTS[expert_id],
-        max_new_tokens=300,
-        seed=seed,
-    )
+    raw = generate_text_backend(SYSTEM_PROMPTS[expert_id], build_prompt(expert_id, request))
     logger.info(f"[{expert_id}] raw: {raw[:200]}")
 
     parsed = extract_and_repair_json(raw)
