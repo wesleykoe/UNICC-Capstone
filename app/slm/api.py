@@ -12,7 +12,7 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 
 def generate_text_anthropic(system_prompt: str, user_prompt: str) -> str:
     """Call Claude via Anthropic API as LLM backend."""
-    import httpx
+    import httpx, time
     headers = {
         "x-api-key": ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01",
@@ -24,9 +24,19 @@ def generate_text_anthropic(system_prompt: str, user_prompt: str) -> str:
         "system": system_prompt,
         "messages": [{"role": "user", "content": user_prompt}],
     }
-    r = httpx.post("https://api.anthropic.com/v1/messages", json=body, headers=headers, timeout=60)
-    r.raise_for_status()
-    return r.json()["content"][0]["text"]
+    for attempt in range(3):
+        try:
+            r = httpx.post("https://api.anthropic.com/v1/messages", json=body, headers=headers, timeout=60)
+            if r.status_code == 529:
+                time.sleep(5 * (attempt + 1))
+                continue
+            r.raise_for_status()
+            return r.json()["content"][0]["text"]
+        except Exception as e:
+            if attempt == 2:
+                raise
+            time.sleep(5)
+    raise Exception("Anthropic API unavailable after 3 retries")
 
 def generate_text_backend(system_prompt: str, user_prompt: str) -> str:
     """Route to Anthropic or local Llama based on LLM_BACKEND env var."""
