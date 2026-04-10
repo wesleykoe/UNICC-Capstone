@@ -30,6 +30,7 @@ An AI Safety evaluation platform that accepts any AI system as input and returns
   - Apple M1/M2 Mac: runs on MPS (expect 30-120s per evaluation)
   - NVIDIA GPU: runs on CUDA (fastest)
   - CPU only: will be very slow or may run out of memory
+  → If you hit memory issues, try: `PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0 uvicorn app.slm.api:app --host 0.0.0.0 --port 8000`
 - Expected model load time: 1-3 minutes on first run
 
 ### Step 1 — Clone and install
@@ -233,7 +234,7 @@ UNICC-Capstone/
 │   ├── slm/
 │   │   ├── api.py              # FastAPI — /evaluate, /run, /health
 │   │   ├── model.py            # Llama 3.2-3B-Instruct loader
-│   │   ├── adapters/           # LoRA expert adapters (pending DGX Llama-3-8B)
+│   │   ├── adapters/           # LoRA expert adapters (pending DGX Llama-3-8B training — folder intentionally empty)
 │   │   └── __init__.py
 │   └── __init__.py
 ├── Council_of_Experts/
