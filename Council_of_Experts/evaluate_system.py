@@ -23,8 +23,12 @@ import uuid
 import torch
 from datetime import datetime, timezone
 
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from peft import PeftModel
+try:
+    from peft import PeftModel
+    ADAPTERS_AVAILABLE = True
+except ImportError:
+    ADAPTERS_AVAILABLE = False
+    print("[WARN] peft not installed — LoRA adapters disabled")
 
 
 # ================================================================
