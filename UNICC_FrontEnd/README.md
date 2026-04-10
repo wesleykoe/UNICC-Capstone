@@ -103,7 +103,7 @@ Responsible for:
 ### 1. Clone repo
  
 ```bash
-git clone https://github.com/<your-username>/<your-repo>.git
+git clone https://github.com/wesleykoe/UNICC-Capstone.git
 cd UNICC-Capstone
 ```
  

@@ -621,6 +621,30 @@ def run_evaluation(req: RunRequest):
                         pass
             delib_status = "complete"
             logger.info(f"[{rid}] deliberation complete — {len(delib_critiques)} critiques, {len(delib_defenses)} defenses")
+
+            # Re-arbitrate if any expert changed position after deliberation
+            position_changes = [d for d in delib_defenses if d.position_changed]
+            if position_changes:
+                logger.info(f"[{rid}] {len(position_changes)} position changes detected — re-arbitrating")
+                for defense in position_changes:
+                    name = defense.defending_expert.lower().split()[0]
+                    if name == "governance":
+                        gov = gov.model_copy(update={
+                            "recommended_action": defense.updated_recommended_action,
+                            "overall_status": defense.updated_overall_status,
+                        })
+                    elif name == "threat":
+                        threat = threat.model_copy(update={
+                            "recommended_action": defense.updated_recommended_action,
+                            "overall_status": defense.updated_overall_status,
+                        })
+                    elif name == "behavioral":
+                        beh = beh.model_copy(update={
+                            "recommended_action": defense.updated_recommended_action,
+                            "overall_status": defense.updated_overall_status,
+                        })
+                council = arbitrate(gov, threat, beh)
+                logger.info(f"[{rid}] re-arbitration complete — new decision: {council.final_decision}")
         except Exception as e:
             logger.warning(f"Deliberation failed: {e}")
             delib_status = "failed"
@@ -889,6 +913,30 @@ def evaluate_github(req: EvaluateRequest):
                         pass
             delib_status = "complete"
             logger.info(f"[{rid}] deliberation complete — {len(delib_critiques)} critiques, {len(delib_defenses)} defenses")
+
+            # Re-arbitrate if any expert changed position after deliberation
+            position_changes = [d for d in delib_defenses if d.position_changed]
+            if position_changes:
+                logger.info(f"[{rid}] {len(position_changes)} position changes detected — re-arbitrating")
+                for defense in position_changes:
+                    name = defense.defending_expert.lower().split()[0]
+                    if name == "governance":
+                        gov = gov.model_copy(update={
+                            "recommended_action": defense.updated_recommended_action,
+                            "overall_status": defense.updated_overall_status,
+                        })
+                    elif name == "threat":
+                        threat = threat.model_copy(update={
+                            "recommended_action": defense.updated_recommended_action,
+                            "overall_status": defense.updated_overall_status,
+                        })
+                    elif name == "behavioral":
+                        beh = beh.model_copy(update={
+                            "recommended_action": defense.updated_recommended_action,
+                            "overall_status": defense.updated_overall_status,
+                        })
+                council = arbitrate(gov, threat, beh)
+                logger.info(f"[{rid}] re-arbitration complete — new decision: {council.final_decision}")
         except Exception as e:
             logger.warning(f"Deliberation failed: {e}")
             delib_status = "failed"
