@@ -59,17 +59,16 @@ Frontend (Replit):
 ```bash
 UNICC-Capstone/
 │
-├── UNICC_FrontEnd/        # Frontend (Replit UI)
-│
-├── app/
-│   └── slm/
-│       ├── api.py         # Main FastAPI backend entry
-│       ├── model.py       # Model / inference logic
-│       └── __init__.py
-│
-├── requirements.txt
-└── README.md
-```
+└── UNICC_FrontEnd/             # Frontend application folder
+    ├── lib/                    # Shared frontend libraries, utilities, or app modules
+    ├── scripts/                # Project scripts for setup, build, or automation
+    ├── README.md               # Frontend-specific documentation
+    ├── link for replit website.md   # Contains the published Replit/demo link
+    ├── package.json            # Project metadata, scripts, and dependencies
+    ├── pnpm-lock.yaml          # Locked dependency versions for reproducible installs
+    ├── pnpm-workspace.yaml     # PNPM workspace configuration
+    ├── tsconfig.base.json      # Base TypeScript compiler configuration
+    └── tsconfig.json           # Main TypeScript compiler configuration for this app
  
 ---
  
