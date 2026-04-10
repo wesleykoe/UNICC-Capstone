@@ -305,11 +305,11 @@ docker compose up --build
 
 ---
 
-## No API Keys Required
+## Backend Options
 
-This platform runs fully standalone using open-source models from HuggingFace.
-No OpenAI, Anthropic, or other paid API keys are needed.
+**Option A (recommended for evaluation):** Set `LLM_BACKEND=anthropic` and provide an `ANTHROPIC_API_KEY`. No GPU or HuggingFace access required.
 
+**Option B (production / DGX):** Set `LLM_BACKEND=local` with a valid `HF_TOKEN`. Requires GPU and approved HuggingFace access to Llama 3.
 ---
 
 ## Team
