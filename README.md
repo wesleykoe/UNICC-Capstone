@@ -82,7 +82,8 @@ UNICC_DELIBERATION=true uvicorn app.slm.api:app --host 0.0.0.0 --port 8000
 ```
 > **LLM Backend:** By default the system runs on local Llama 3.2-3B. To use Claude (Anthropic) as the LLM backend — which produces more stable and distinct expert outputs — set `LLM_BACKEND=anthropic` and `ANTHROPIC_API_KEY=your_key` in your `.env` file.
 
-> **Note on deliberation status:** If you see `deliberation_status: "pending_dgx"`, this is expected — not a failure. Set `UNICC_DELIBERATION_ACTIVE=true` to activate cross-expert critique and defense rounds on GPU hardware.
+> **Deliberation layer:** Active by default when `UNICC_DELIBERATION_ACTIVE=true` is set in `.env`. 
+> You will see `deliberation_critiques` and `deliberation_defenses` populated in the response.
 
 Server runs at: `http://localhost:8000`
 Interactive docs: `http://localhost:8000/docs`
