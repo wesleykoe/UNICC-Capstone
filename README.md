@@ -88,6 +88,12 @@ UNICC_DELIBERATION=true uvicorn app.slm.api:app --host 0.0.0.0 --port 8000
 Server runs at: `http://localhost:8000`
 Interactive docs: `http://localhost:8000/docs`
 
+### Step 4 — Run unit tests (optional)
+
+```bash
+pytest tests/
+```
+
 ---
 
 ## Running with Docker
