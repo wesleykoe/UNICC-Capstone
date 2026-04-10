@@ -5,7 +5,14 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, set_seed
 BASE_MODEL_ID = os.getenv("BASE_MODEL_ID", "meta-llama/Llama-3.2-3B-Instruct")
 DEVICE = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
 
+_PIPE_CACHE = None
+
 def load_pipe(model_id: str = BASE_MODEL_ID):
+    global _PIPE_CACHE
+    if os.getenv("LLM_BACKEND", "local") == "anthropic":
+        return None  # Skip model load entirely when using Anthropic backend
+    if _PIPE_CACHE is not None:
+        return _PIPE_CACHE
     print(f"Loading {model_id} on {DEVICE}...")
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     if tokenizer.pad_token is None:
@@ -17,7 +24,8 @@ def load_pipe(model_id: str = BASE_MODEL_ID):
     )
     model.eval()
     print("✅ Model loaded.")
-    return tokenizer, model
+    _PIPE_CACHE = (tokenizer, model)
+    return _PIPE_CACHE
 
 def generate_text(pipe, prompt, expert_id="governance", system_prompt="You are a strict JSON API. Output ONLY valid JSON.", max_new_tokens=256, seed=42):
     tokenizer, model = pipe
