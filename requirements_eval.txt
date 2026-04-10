@@ -6,3 +6,4 @@ pydantic_core==2.41.5
 starlette==0.52.1
 anyio==4.12.1
 python-dotenv>=1.0.0
+python-dotenv>=1.0.0
