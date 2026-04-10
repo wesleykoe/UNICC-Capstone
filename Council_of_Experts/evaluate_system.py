@@ -53,7 +53,7 @@ ADAPTER_PATHS = {
 # Arbitration rule set version
 ARBITRATION_VERSION = "v1.0"
 
-USE_DELIBERATION = os.getenv("UNICC_DELIBERATION", "false").lower() == "true"
+USE_DELIBERATION = os.getenv("UNICC_DELIBERATION", "true").lower() == "true"
 
 # Schema shown to model during inference — must match training prompt
 EXPERT_SCHEMA = (
