@@ -58,6 +58,10 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 UNICC_DELIBERATION_ACTIVE=true
 ```
 
+⁠*Note:* LoRA adapter weights are used only with the local Llama backend.
+When ⁠ LLM_BACKEND=anthropic ⁠, adapters are not loaded and HuggingFace access ⁠is not required. This is the recommended path for evaluation.
+
+
 **Option B — Use local Llama 3.2-3B (requires GPU + HuggingFace access):**
 
 Edit `.env` and set:
