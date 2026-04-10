@@ -169,6 +169,7 @@ class DeliberationDefense(BaseModel):
 
 class CouncilDecision(BaseModel):
     final_decision: Literal["Approve", "Revise", "Escalate", "Reject"]
+    rubric_verdict: Literal["APPROVE", "REVIEW", "REJECT"]  # ADD THIS LINE
     final_risk_level: Literal["Low", "Moderate", "High", "Critical"]
     consensus_level: Literal["Full Agreement", "Majority Agreement", "Structured Disagreement"]
     summary_of_key_disagreements: list[str]
@@ -403,7 +404,7 @@ def run_expert(expert_id: str, request: RunRequest, seed: int = 42) -> ExpertOut
 # Arbitration v1.1
 # ─────────────────────────────────────────
 
-def arbitrate(gov: ExpertOutput, threat: ExpertOutput, beh: ExpertOutput) -> CouncilDecision:
+def arbitrate(gov: ExpertOutput, threat: ExpertOutput, beh: ExpertOutput, system_name: str = "the evaluated system") -> CouncilDecision:
     experts  = [gov, threat, beh]
     actions  = [e.recommended_action for e in experts]
     statuses = [e.overall_status for e in experts]
@@ -424,6 +425,9 @@ def arbitrate(gov: ExpertOutput, threat: ExpertOutput, beh: ExpertOutput) -> Cou
     else:
         final_decision = "Approve"
         triggered_rule = "Rule 6: Full Approval"
+
+    _RUBRIC_MAP = {"Approve": "APPROVE", "Revise": "REVIEW", "Escalate": "REVIEW", "Reject": "REJECT"}
+    rubric_verdict = _RUBRIC_MAP[final_decision]
 
     # Final Risk — maximum
     final_risk = max(risks, key=lambda r: RISK_RANK.get(r, 0))
@@ -480,15 +484,18 @@ def arbitrate(gov: ExpertOutput, threat: ExpertOutput, beh: ExpertOutput) -> Cou
             if ref not in all_refs:
                 all_refs.append(ref)
 
-    # Final rationale
+   # Final rationale — names the evaluated system and synthesizes findings
     rationale_parts = " | ".join([e.rationale_summary for e in experts])
     final_rationale = (
-        f"Council decision based on {consensus.lower()} across 3 experts. "
-        f"Dominant influence: {dominant.expert_name}. {rationale_parts}."
+        f"The Council reached {consensus.lower()} and recommends {final_decision} "
+        f"based on {len(experts)} independent expert assessments. "
+        f"The {dominant.expert_name} carried dominant influence. "
+        f"Key findings: {rationale_parts}."
     )
 
     return CouncilDecision(
         final_decision=final_decision,
+        rubric_verdict=rubric_verdict,  
         final_risk_level=final_risk,
         consensus_level=consensus,
         summary_of_key_disagreements=disagreements,
@@ -636,7 +643,7 @@ def run_evaluation(req: RunRequest):
 
     logger.info(f"[{rid}] gov={gov.overall_status} threat={threat.overall_status} beh={beh.overall_status}")
 
-    council    = arbitrate(gov, threat, beh)
+    council    = arbitrate(gov, threat, beh, system_name=run_req.ai_system.name)
     metadata   = build_metadata(rid, [gov, threat, beh], council, req)
     latency_ms = int((time.time() - t0) * 1000)
 
@@ -844,7 +851,7 @@ def evaluate_github(req: EvaluateRequest):
     threat = run_expert("threat",     run_req, seed=137)
     beh    = run_expert("behavioral", run_req, seed=251)
 
-    council    = arbitrate(gov, threat, beh)
+    council    = arbitrate(gov, threat, beh, system_name=req.ai_system.name)
     metadata   = build_metadata(rid, [gov, threat, beh], council, run_req)
     latency_ms = int((time.time() - t0) * 1000)
 
