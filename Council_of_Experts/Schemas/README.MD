@@ -111,7 +111,7 @@ Produced by the deterministic arbitration layer after all expert outputs are col
 
 ---
 
-## 5. Arbitration Rules (v1.0)
+## 5. Arbitration Rules (v1.1)
 
 The arbitration layer applies six rules in strict priority order:
 
