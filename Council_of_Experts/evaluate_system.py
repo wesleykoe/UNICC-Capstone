@@ -512,7 +512,7 @@ def run_defense(defender_role, defender_adapter, defender_output,
     return parsed
 
 
-def deliberate(expert_outputs, scenario_input, adapter_paths, active=False):
+def deliberate(expert_outputs, scenario_input, adapter_paths, active=True):
     """
     Run deliberation phase — critique round + defense round.
     If active=False, returns a stub result with empty critiques
