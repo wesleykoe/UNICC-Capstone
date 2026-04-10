@@ -244,17 +244,29 @@ UNICC-Capstone/
 │   ├── slm/
 │   │   ├── api.py              # FastAPI — /evaluate, /run, /health
 │   │   ├── model.py            # Llama 3.2-3B-Instruct loader
-│   │   ├── adapters/           # LoRA expert adapters (pending DGX Llama-3-8B training — folder intentionally empty)
 │   │   └── __init__.py
 │   └── __init__.py
 ├── Council_of_Experts/
 │   ├── Schemas/                # Expert output schema v2.0, arbitration rules v1.1
 │   ├── Training_Data/          # 180 domain-specific training examples (60 per expert)
 │   ├── docs/design/            # Expert framework design documents
-│   └── evaluate_system.py      # Council evaluation + deliberation pipeline
-├── UNICC_FrontEnd/             # React UI (Replit hosted)
+│   ├── UNICC_Adapters_Training.py  # Adapters & Training Model
+│   ├── evaluate_system.py      # Council evaluation + deliberation pipeline
+│   └── test_evaluate_system.py # Testing operational functionality and results of evaluate_system.py  
+├── UNICC_FrontEnd/             # Frontend application folder
+    ├── lib/                    # Shared frontend libraries, utilities, or app modules
+    ├── scripts/                # Project scripts for setup, build, or automation
+    ├── README.md               # Frontend-specific documentation
+    ├── link for replit website.md   # Contains the published Replit/demo link
+    ├── package.json            # Project metadata, scripts, and dependencies
+    ├── pnpm-lock.yaml          # Locked dependency versions for reproducible installs
+    ├── pnpm-workspace.yaml     # PNPM workspace configuration
+    ├── tsconfig.base.json      # Base TypeScript compiler configuration
+    └── tsconfig.json           # Main TypeScript compiler configuration for this app      
 ├── Dockerfile
+├── .gitignore
 ├── docker-compose.yml
+├── README.md
 ├── .env.example
 ├── requirements.txt
 └── requirements_dgx.txt
