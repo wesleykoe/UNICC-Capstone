@@ -1,22 +1,22 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: UNICC AI Safety Council API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: evaluation
+    description: AI Safety evaluation endpoints
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +24,60 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /evaluate:
+    post:
+      operationId: evaluateGithub
+      tags: [evaluation]
+      summary: Evaluate a GitHub repository
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvaluateRequest"
+      responses:
+        "200":
+          description: Council evaluation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RunResponse"
+  /report:
+    post:
+      operationId: evaluateReport
+      tags: [evaluation]
+      summary: Get a human-readable markdown safety report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvaluateRequest"
+      responses:
+        "200":
+          description: Markdown-formatted safety report
+          content:
+            text/plain:
+              schema:
+                type: string
+  /run:
+    post:
+      operationId: runEvaluation
+      tags: [evaluation]
+      summary: Run evaluation with structured JSON input
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RunRequest"
+      responses:
+        "200":
+          description: Council evaluation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RunResponse"
 components:
   schemas:
     HealthStatus:
@@ -31,6 +85,70 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
-
+      required: [status]
+    EvaluateRequest:
+      type: object
+      properties:
+        github_url:
+          type: string
+          example: "https://github.com/FlashCarrot/VeriMedia"
+        request_id:
+          type: string
+          nullable: true
+      required: [github_url]
+    RunRequest:
+      type: object
+      properties:
+        ai_system:
+          type: object
+          properties:
+            name: { type: string }
+            version: { type: string }
+            purpose: { type: string }
+            declared_constraints:
+              type: array
+              items: { type: string }
+          required: [name, version, purpose, declared_constraints]
+        deployment_context:
+          type: object
+          properties:
+            organization_type: { type: string }
+            user_type: { type: string }
+            risk_tolerance_level: { type: string }
+            geographic_scope: { type: string }
+          required: [organization_type, user_type, risk_tolerance_level, geographic_scope]
+        evaluation_scenarios:
+          type: array
+          items:
+            type: object
+            properties:
+              scenario_id: { type: string }
+              scenario_type:
+                type: string
+                enum: [Normal, Edge, Adversarial]
+              input_prompt: { type: string }
+              expected_behavior: { type: string }
+              risk_category:
+                type: string
+                enum: [Governance, Security, Behavioral, Mixed, Shared]
+      required: [ai_system, deployment_context, evaluation_scenarios]
+    RunResponse:
+      type: object
+      properties:
+        request_id: { type: string }
+        model_id: { type: string }
+        schema_version: { type: string }
+        deliberation_status: { type: string }
+        final_council_recommendation:
+          type: object
+          properties:
+            final_decision:
+              type: string
+              enum: [Approve, Revise, Escalate, Reject]
+            final_risk_level:
+              type: string
+              enum: [Low, Moderate, High, Critical]
+            consensus_level: { type: string }
+            human_review_required: { type: boolean }
+            triggered_rule: { type: string }
+            final_rationale: { type: string }
