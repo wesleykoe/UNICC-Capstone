@@ -53,7 +53,10 @@ try:
 except ImportError:
     DELIBERATION_AVAILABLE = False
 
-USE_DELIBERATION = os.getenv("UNICC_DELIBERATION", "true").lower() == "true"
+USE_DELIBERATION = (
+    os.getenv("UNICC_DELIBERATION", "true").lower() == "true"
+    or os.getenv("UNICC_DELIBERATION_ACTIVE", "false").lower() == "true"
+)
 
 # ─────────────────────────────────────────
 # Logging
