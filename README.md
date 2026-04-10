@@ -43,52 +43,36 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Step 2 — Set up HuggingFace token
-
+### Step 2 — Set up your environment
 ```bash
 cp .env.example .env
-# Edit .env and set: HF_TOKEN=hf_your_token_here
 ```
-
-Or login directly:
-```bash
-python -c "from huggingface_hub import login; login()"
+**Option A — Use Claude as LLM backend (recommended for evaluation, no GPU required):**
+Edit `.env` and set:
 ```
-
+LLM_BACKEND=anthropic
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+UNICC_DELIBERATION_ACTIVE=true
+```
+**Option B — Use local Llama 3.2-3B (requires GPU + HuggingFace access):**
+Edit `.env` and set:
+```
+HF_TOKEN=hf_your_token_here
+UNICC_DELIBERATION_ACTIVE=true
+```
 ### Step 3 — Run the server
-
 ```bash
 uvicorn app.slm.api:app --host 0.0.0.0 --port 8000
 ```
-
-To enable the deliberation layer (critique + defense rounds):
-```bash
-UNICC_DELIBERATION=true uvicorn app.slm.api:app --host 0.0.0.0 --port 8000
-```
-> **LLM Backend:** By default the system runs on local Llama 3.2-3B. To use Claude (Anthropic) as the LLM backend — which produces more stable and distinct expert outputs — set `LLM_BACKEND=anthropic` and `ANTHROPIC_API_KEY=your_key` in your `.env` file.
-
-> **Note on deliberation status:** If you see `deliberation_status: "pending_dgx"`, this is expected — not a failure. Set `UNICC_DELIBERATION_ACTIVE=true` to activate cross-expert critique and defense rounds on GPU hardware.
-
-Server runs at: `http://localhost:8000`
-Interactive docs: `http://localhost:8000/docs`
-
----
-
-## Running with Docker
-
-```bash
-cp .env.example .env
-# Add your HuggingFace token to .env
-docker compose up --build
-```
+> For evaluation: use the /report endpoint — see API Endpoints below.
 
 ---
 
 ## API Endpoints
 
-### `POST /evaluate` — Submit a GitHub URL (recommended)
+### `POST /report` — Human-readable markdown report
 
-Submit any public GitHub repository for evaluation:
+Submit a Github URL and receive a formatted markdown safety report:
 
 ```bash
 curl -X POST http://localhost:8000/evaluate \
@@ -130,9 +114,9 @@ curl -X POST http://localhost:8000/run \
   }'
 ```
 
-### `POST /report` — Human-readable markdown report
+### `POST /evaluate` — Full JSON response 9for developers)
 
-Same as `/evaluate` but returns a formatted markdown report instead of JSON — designed for non-technical UNICC stakeholders:
+Same pipeline as /report but returns the complet structured JSON payload,
 
 ```bash
 curl -X POST http://localhost:8000/report \
