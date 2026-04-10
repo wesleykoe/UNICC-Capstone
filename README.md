@@ -114,7 +114,7 @@ curl -X POST http://localhost:8000/run \
   }'
 ```
 
-### `POST /evaluate` — Full JSON response 9for developers)
+### `POST /evaluate` — Full JSON response (for developers)
 
 Same pipeline as /report but returns the complet structured JSON payload,
 
