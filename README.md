@@ -64,6 +64,7 @@ To enable the deliberation layer (critique + defense rounds):
 ```bash
 UNICC_DELIBERATION=true uvicorn app.slm.api:app --host 0.0.0.0 --port 8000
 ```
+> **Note on deliberation status:** If you see `deliberation_status: "pending_dgx"`, this is expected — not a failure. Set `UNICC_DELIBERATION_ACTIVE=true` to activate cross-expert critique and defense rounds on GPU hardware.
 
 Server runs at: `http://localhost:8000`
 Interactive docs: `http://localhost:8000/docs`
