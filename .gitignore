@@ -5,3 +5,5 @@ __pycache__/
 .venv/
 app/slm/adapters/
 .env
+UNICC_FrontEnd/dist/
+UNICC_FrontEnd/pnpm-lock.yaml
