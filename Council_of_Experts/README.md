@@ -532,7 +532,13 @@ result = evaluate(scenario_input, use_deliberation=True)
 Trained LoRA adapter weights are not included in this repository due to file size (~50-100MB each).
 
 **Adapter weights** are hosted on HuggingFace Hub — no manual download needed.
-They load automatically when `evaluate_system.py` runs:
+
+> **Note on adapter availability:** The three LoRA expert adapters
+> (`Wesleykoe01/unicc-governance-adapter`, `Wesleykoe01/unicc-threat-adapter`,
+> `Wesleykoe01/unicc-behavioral-adapter`) are hosted publicly on HuggingFace
+> and will be downloaded automatically on first run. No special access request
+> is needed — just a valid `HF_TOKEN` from your HuggingFace account settings.
+> If you see a 401 error, ensure your token has at least read access.
 
 | Expert | HuggingFace Repo |
 |---|---|
