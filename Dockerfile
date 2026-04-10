@@ -1,24 +1,26 @@
-# Dockerfile
 FROM python:3.11-slim
 
-# Set working directory
+ARG LLM_BACKEND=anthropic
+
 WORKDIR /app
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements_eval.txt requirements.txt ./
 
-# Copy application code
+RUN if [ "$LLM_BACKEND" = "anthropic" ]; then \
+    pip install --no-cache-dir -r requirements_eval.txt; \
+    else \
+    pip install --no-cache-dir -r requirements.txt; fi
+
 COPY . .
 
-# Expose port
 EXPOSE 8000
 
-# Run the application
+HEALTHCHECK --interval=10s --timeout=5s --retries=5 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
 CMD ["uvicorn", "app.slm.api:app", "--host", "0.0.0.0", "--port", "8000"]
