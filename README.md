@@ -23,7 +23,7 @@ An AI Safety evaluation platform that accepts any AI system as input and returns
 
 ### Prerequisites
 
-- Python 3.11+
+- Python 3.11+ (3.12+ not tested)
 - HuggingFace account with **Llama 3 access approved**
   → Request access: https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct
 - **GPU strongly recommended** — Llama 3.2-3B requires ~6GB RAM minimum
