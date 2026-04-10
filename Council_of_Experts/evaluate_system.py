@@ -2,7 +2,9 @@
 evaluate_system.py
 ==================
 Council of Experts — AI Evaluation Pipeline
-UNICC AI Safety Evaluation System
+
+UNICC AI Safety Evaluation System -- DGX-targeted deliberation pipeline for the UNICC Council of Experts.
+
 
 Architecture:
     Layer 1: 3 independent expert models (LoRA fine-tuned)
@@ -15,7 +17,14 @@ Architecture:
 Usage:
     from evaluate_system import evaluate
     result = evaluate(scenario_input)
+
+This module implements the full LoRA adapter training, expert evaluation, and
+multi-agent deliberation logic designed to run on the NYU DGX cluster with a
+local Llama-3-8B model. It is separate from app/slm/api.py, which is the
+lightweight FastAPI server that uses the Anthropic backend for evaluators.
+
 """
+
 
 import json
 import re
