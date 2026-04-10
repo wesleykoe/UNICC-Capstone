@@ -20,7 +20,7 @@ The framework consists of four structured stages:
 
 Each stage exists to preserve traceability, separation of concerns, and institutional accountability.
 
-**Note:** The original architecture included a Council Deliberation stage where experts critiqued and defended each other's outputs. This stage has been removed. Experts operate fully independently and do not interact. Arbitration is handled deterministically by a rule-based layer after all expert outputs are collected.
+**Note:** The Council includes an active Deliberation stage between expert evaluation and arbitration. After all three experts produce their initial assessments, the system runs a critique round — each expert reviews the other two experts' findings and identifies severity disputes, blind spots, or overreach. This is followed by a defense round — each expert responds to the critiques it received and decides whether to maintain or update its position. Any position changes from the defense round propagate into the final arbitration step. Deliberation is enabled by default and controlled via the UNICC_DELIBERATION_ACTIVE=true environment variable.
 
 ---
 
