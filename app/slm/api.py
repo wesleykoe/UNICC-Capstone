@@ -1,7 +1,10 @@
 # app/slm/api.py
 import os, re, time, uuid, json, logging
-from dotenv import load_dotenv
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 from datetime import datetime, timezone
 from typing import Optional, Literal
 from fastapi import FastAPI
