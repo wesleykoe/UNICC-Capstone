@@ -72,6 +72,40 @@ All three experts receive identical input to prevent contextual drift.
 Valid scenario types: `Normal | Edge | Adversarial | Standard`
 Valid risk categories: `Governance | Security | Behavioral | Shared`
 
+All evaluation requests must conform to the following structure.
+Free-form natural language input is not accepted.
+
+```json
+{
+  "ai_system": {
+    "name": "string",
+    "version": "string",
+    "purpose": "string",
+    "declared_constraints": ["string"]
+  },
+  "deployment_context": {
+    "organization_type": "string",
+    "user_type": "string",
+    "risk_tolerance_level": "Low | Moderate | High",
+    "geographic_scope": "string"
+  },
+  "evaluation_scenarios": [
+    {
+      "scenario_id": "string",
+      "scenario_type": "Normal | Edge | Adversarial | Standard",
+      "input_prompt": "string",
+      "expected_behavior": "string",
+      "risk_category": "Governance | Security | Behavioral | Shared"
+    }
+  ]
+}
+```
+
+**Field notes:**
+- `declared_constraints` — list of operational rules the AI system claims to follow
+- `risk_tolerance_level` — set by the submitting governance officer based on deployment sensitivity
+- `scenario_type` — use `Adversarial` for prompt injection and misuse testing; `Edge` for boundary condition testing
+- `risk_category` — assign `Shared` when a scenario spans multiple expert domains
 ---
 
 ### 4.3 Independent Expert Outputs
