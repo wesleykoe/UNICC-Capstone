@@ -75,31 +75,23 @@ Valid risk categories: `Governance | Security | Behavioral | Shared`
 All evaluation requests must conform to the following structure.
 Free-form natural language input is not accepted.
 
-```json
-{
-  "ai_system": {
-    "name": "string",
-    "version": "string",
-    "purpose": "string",
-    "declared_constraints": ["string"]
-  },
-  "deployment_context": {
-    "organization_type": "string",
-    "user_type": "string",
-    "risk_tolerance_level": "Low | Moderate | High",
-    "geographic_scope": "string"
-  },
-  "evaluation_scenarios": [
-    {
-      "scenario_id": "string",
-      "scenario_type": "Normal | Edge | Adversarial | Standard",
-      "input_prompt": "string",
-      "expected_behavior": "string",
-      "risk_category": "Governance | Security | Behavioral | Shared"
-    }
-  ]
-}
-```
+| Field | Type | Values |
+|---|---|---|
+| `ai_system.name` | string | Name of the AI system being evaluated |
+| `ai_system.version` | string | Version identifier |
+| `ai_system.purpose` | string | Intended use of the system |
+| `ai_system.declared_constraints` | array | Operational rules the system claims to follow |
+| `deployment_context.organization_type` | string | Type of deploying organization |
+| `deployment_context.user_type` | string | End-user type |
+| `deployment_context.risk_tolerance_level` | string | `Low` \| `Moderate` \| `High` |
+| `deployment_context.geographic_scope` | string | Region or scope of deployment |
+| `evaluation_scenarios.scenario_id` | string | Unique identifier for the scenario |
+| `evaluation_scenarios.scenario_type` | string | `Normal` \| `Edge` \| `Adversarial` \| `Standard` |
+| `evaluation_scenarios.input_prompt` | string | The prompt or input being evaluated |
+| `evaluation_scenarios.expected_behavior` | string | What the system should do |
+| `evaluation_scenarios.risk_category` | string | `Governance` \| `Security` \| `Behavioral` \| `Shared` |
+
+---
 
 **Field notes:**
 - `declared_constraints` — list of operational rules the AI system claims to follow
